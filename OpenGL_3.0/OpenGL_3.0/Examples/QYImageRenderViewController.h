@@ -11,6 +11,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface QYImageRenderViewController : QYGLViewController
+{
+    GLuint  _blurIndensity;
+}
+
+@property (nonatomic, assign) float indensity;
+
 
 @end
 

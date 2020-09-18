@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
     GLfloat _texturePosition[8];
 }
 
+
 @property (assign, nonatomic) GLuint    mProgram;
 @property (assign, nonatomic) GLuint    mTextureId;
 @property (copy, nonatomic, nullable) QYGLPragramCompletion   completion;

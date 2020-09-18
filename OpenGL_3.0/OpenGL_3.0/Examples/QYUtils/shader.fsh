@@ -5,8 +5,9 @@ uniform sampler2D inputImageTexture;
 uniform float mTime;
 uniform float chatrlet;
 varying vec2 imagesize;
-
 varying float transitionType;
+
+uniform float intensity;
 
 // 11x11
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
@@ -105,10 +106,8 @@ void main()
     }
     else {
         vec2 uv = textureCoordinate.xy;
-        vec2 radius = vec2(3.0, 1.0);
+        vec2 radius = vec2(intensity, intensity);
         textureColor = blur13(inputImageTexture, uv, imagesize, radius);
-        gl_FragColor = vec4(textureColor.rgb, 1.0);
-        return;
     }
 
     gl_FragColor = textureColor;
