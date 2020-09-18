@@ -105,9 +105,12 @@ void main()
         }
     }
     else {
-        vec2 uv = textureCoordinate.xy;
-        vec2 radius = vec2(intensity, intensity);
-        textureColor = blur13(inputImageTexture, uv, imagesize, radius);
+        if (intensity > 0.0)
+        {
+            vec2 uv = textureCoordinate.xy;
+            vec2 radius = vec2(intensity, intensity);
+            textureColor = blur13(inputImageTexture, uv, imagesize, radius);
+        }
     }
 
     gl_FragColor = textureColor;
