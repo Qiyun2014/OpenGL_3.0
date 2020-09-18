@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
            untilBindAttributeBlock:(void (^) (GLuint program))bindBlock
             complileCompletedBlcok:(void (^) (GLuint program))completedBlock;
 
++ (GLuint)textureIdForImage:(UIImage *)image;
+
 @end
 
 NS_ASSUME_NONNULL_END

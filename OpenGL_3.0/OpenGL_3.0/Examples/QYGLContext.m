@@ -7,7 +7,7 @@
 //
 
 #import "QYGLContext.h"
-#import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES3/glext.h>
 
 @implementation QYGLContext
 {

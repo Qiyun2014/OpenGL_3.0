@@ -45,6 +45,7 @@
 - (NSArray *)controlNames {
     return @[@"QYImageRenderViewController",
              @"QYImageTransitionViewController",
+             @"QYImageTransitionTypeViewController",
     ];
 }
 
@@ -52,6 +53,7 @@
 - (NSArray *)cellForTitles {
     return @[@"单张图片",
              @"图片转场",
+             @"图片多个转场切换",
     ];
 }
 

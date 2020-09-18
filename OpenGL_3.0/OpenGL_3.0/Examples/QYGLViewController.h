@@ -10,6 +10,8 @@
 #import <GLKit/GLKit.h>
 #import <OpenGLES/ES3/gl.h>
 #import <OpenGLES/ES3/glext.h>
+#import "QYGLContext.h"
+#import "QYGLUtils.h"
 
 typedef void (^QYGLPragramCompletion) (void);
 
@@ -39,6 +41,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) GLuint    mProgram;
 @property (assign, nonatomic) GLuint    mTextureId;
 @property (copy, nonatomic, nullable) QYGLPragramCompletion   completion;
+
+
+// rotation angle (0 ~ 360)
+@property (nonatomic, assign) float rotationAngle;
+// vertical rotation angle (0 ~ 360)
+@property (nonatomic, assign) float verticalRotationAngle;
+// zoom vale, default value is 1.0
+@property (nonatomic, assign) float zoom;
+// draw position offset
+@property (nonatomic, assign) CGPoint offsetPoint;
 
 
 - (void)redrawTexture;

@@ -14,18 +14,24 @@
 
 @implementation QYImageRenderViewController
 
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"yourname" ofType:@"png"];
-    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithContentsOfFile:imagePath options:@{GLKTextureLoaderOriginBottomLeft : @true, GLKTextureLoaderGenerateMipmaps : @true} error:NULL];
+    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithContentsOfFile:imagePath
+                                                                      options:@{GLKTextureLoaderOriginBottomLeft : @true, GLKTextureLoaderGenerateMipmaps : @true}
+                                                                        error:NULL];
     self.mTextureId = textureInfo.name;
     _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 }
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
 }
 
 /*

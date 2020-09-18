@@ -150,4 +150,52 @@ void CheckGLError(const char *pGLOperation)
 }
 
 
++ (GLuint)textureIdForImage:(UIImage *)image
+{
+    if (image == nil) {
+        return 0;
+    }
+    CGImageRef cgImageRef = [image CGImage];
+    GLuint width = (GLuint)CGImageGetWidth(cgImageRef);
+    GLuint height = (GLuint)CGImageGetHeight(cgImageRef);
+    CGRect rect = CGRectMake(0, 0, width, height);
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    void *imageData = malloc(width * height * 4);
+    CGContextRef context = CGBitmapContextCreate(imageData, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+//    CGContextTranslateCTM(context, 0, height);
+//    CGContextScaleCTM(context, 1.0f, -1.0f);
+//    CGColorSpaceRelease(colorSpace);
+//    CGContextClearRect(context, rect);
+//    CGContextTranslateCTM(context, 0, height);
+//    CGContextScaleCTM(context, 1.0, -1.0);
+
+    CGContextDrawImage(context, rect, cgImageRef);
+    
+    glEnable(GL_TEXTURE_2D);
+
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // S方向上的贴图模式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // T方向上的贴图模式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    // 生成 Mipmap 是针对操作台 GL_TEXTURE_2D 上的选定漏斗 GL_TEXTURE1 所插在的瓶子里的酒的，即处理图片
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    glBindTexture(GL_TEXTURE_2D, 0);
+    CGContextRelease(context);
+//    CGImageRelease(cgImageRef);
+    colorSpace = nil;
+    free(imageData);
+    
+    return textureID;
+}
+
+
 @end

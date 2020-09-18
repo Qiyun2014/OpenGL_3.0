@@ -7,9 +7,18 @@
 //
 
 #import "QYGLViewController.h"
-#import "QYGLContext.h"
-#import "QYGLUtils.h"
- #import <AVFoundation/AVUtilities.h>
+#import <AVFoundation/AVUtilities.h>
+
+enum
+{
+    UNIFORM_PIXEL_SIZE,
+    UNIFORM_ZOOM,
+    UNIFORM_OFFSET,
+    UNIFORM_ANGLE_X,
+    UNIFORM_ANGLE_Y,
+    NUM_UNIFORMS
+};
+GLint uniforms[NUM_UNIFORMS];
 
 
 @interface QYGLViewController ()
@@ -26,7 +35,7 @@
         
         GLKView *view = (GLKView *)self.view;
         view.context = [QYGLContext shareImageContext].context;
-        view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+        view.drawableDepthFormat = GLKViewDrawableColorFormatRGB565;
         self.preferredFramesPerSecond = 10;
         
         [self loadShaders];
@@ -50,12 +59,6 @@
     [EAGLContext setCurrentContext:nil];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-}
-
 
 - (void)loadShaders
 {
@@ -70,33 +73,54 @@
                                 untilBindAttributeBlock:^(GLuint program) {
         OBJC_STRONG(weak_self);
         strong_weak_self.mProgram = program;
+        
     } complileCompletedBlcok:^(GLuint program) {
+        
+        const GLchar* atr[NUM_UNIFORMS] =
+        {
+            "pixelsize",
+            "zoomValue",
+            "offset",
+            "angle_x",
+            "angle_y",
+        };
+        
         NSLog(@"program is %d", program);
         OBJC_STRONG(weak_self);
-
-        strong_weak_self->_positionAttribute = glGetAttribLocation(program, "position");
-        strong_weak_self->_coordinateAttibute = glGetAttribLocation(program, "inputTextureCoordinate");
-        strong_weak_self->_textureUniform = glGetUniformLocation(program, "inputImageTexture");
+        strong_weak_self->_positionAttribute    = glGetAttribLocation(program, "position");
+        strong_weak_self->_textureUniform       = glGetUniformLocation(program, "inputImageTexture");
+        strong_weak_self->_coordinateAttibute   = glGetAttribLocation(program, "inputTextureCoordinate");
         
-        glEnableVertexAttribArray(strong_weak_self->_positionAttribute);
-        glEnableVertexAttribArray(strong_weak_self->_coordinateAttibute);
+        for (int i = 0; i < NUM_UNIFORMS; i ++) {
+            uniforms[i] = glGetUniformLocation(program, atr[i]);
+        }
         
         if (strong_weak_self.completion) {
             strong_weak_self.completion();
         }
+        
         glUseProgram(strong_weak_self.mProgram);
+        glEnableVertexAttribArray(strong_weak_self->_positionAttribute);
+        glEnableVertexAttribArray(strong_weak_self->_coordinateAttibute);
+        [self setZoom:1.0];
     }];
 }
 
 - (void)update
 {
+
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
 
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
-    
+    glUniform2f(uniforms[UNIFORM_PIXEL_SIZE],      _imageSize.width, _imageSize.height);
+    glUniform1f(uniforms[UNIFORM_ZOOM],            _zoom);
+    glUniform1f(uniforms[UNIFORM_ANGLE_X],         (_rotationAngle * M_PI) / 180.0);
+    glUniform1f(uniforms[UNIFORM_ANGLE_Y],         (_verticalRotationAngle * M_PI) / 180.0);
+    glUniform2f(uniforms[UNIFORM_OFFSET],          _offsetPoint.x, _offsetPoint.y);
+
     if (_mTextureId) {
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, _mTextureId);
@@ -111,6 +135,7 @@
     
     [self redrawTexture];
 }
+
 
 - (void)redrawTexture {}
 
@@ -142,5 +167,37 @@
     _texturePosition[6] = normalizedSamplingSize.width;
     _texturePosition[7] = normalizedSamplingSize.height;
 }
+
+
+
+- (void)setZoom:(float)zoom
+{
+    if (zoom >= 0) {
+        glUniform1f(uniforms[UNIFORM_ZOOM], zoom);
+        _zoom = zoom;
+    }
+}
+
+
+- (void)setRotationAngle:(float)rotationAngle
+{
+    glUniform1f(uniforms[UNIFORM_ANGLE_X], (rotationAngle * M_PI) / 180.0);
+    _rotationAngle = rotationAngle;
+}
+
+
+- (void)setOffsetPoint:(CGPoint)offsetPoint
+{
+    glUniform2f(uniforms[UNIFORM_OFFSET], offsetPoint.x, offsetPoint.y);
+    _offsetPoint = offsetPoint;
+}
+
+
+- (void)setVerticalRotationAngle:(float)verticalRotationAngle
+{
+    glUniform1f(uniforms[UNIFORM_ANGLE_Y], (verticalRotationAngle * M_PI) / 180.0);
+    _verticalRotationAngle = verticalRotationAngle;
+}
+
 
 @end
