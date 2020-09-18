@@ -23,7 +23,9 @@ self.mTextureId = textureInfo.name;
 _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 ```
 
-<div align=center><img width="225" height="487" src="example_1.png"/></div>
+**图例一**
+
+<div align=left><img width="300" height="600" src="example_1.png"/></div>
 
 ## 动画
 
@@ -31,4 +33,31 @@ _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 * 在切换图像过程中，编写shader，添加一些行为（如：旋转、渐变、缩放、移动等）
 * 按指定帧率渲染每一帧图像，得到流畅的动画
 
-<div align=center><img width="225" height="487" src="example_2.gif"/></div>
+
+**图例二**
+
+<div align=left><img width="300" height="600" src="example_2.gif"/></div>
+
+
+* 多张图片绘制时，可能需要修改透明度(需要开启混合模式, 会占用一定资源)
+* 将时间作为参数传入shader，用于控制显示时长及效果
+* 绘制第二张图片到窗口，用于替代第一张图，实现转场效果
+
+```
+- (void)redrawTexture
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    timeElapsed += [[NSString stringWithFormat:@"%f", self.timeSinceLastDraw] doubleValue];
+    glUniform1f(_timeUniform, timeElapsed);
+    glUniform1f(_chatrletUniform, 1.0);
+    if (_textureId)
+    {
+         glActiveTexture(GL_TEXTURE3);
+         glBindTexture(GL_TEXTURE_2D, _textureId);
+         glUniform1i(_textureUniform, 3);
+    }
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDisable(GL_BLEND);
+}
+```
