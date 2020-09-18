@@ -23,4 +23,4 @@ self.mTextureId = textureInfo.name;
 _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 ```
 
-![w=300](example_1.png)
+<image src = "example_1.png" width=300 />
