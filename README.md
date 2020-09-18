@@ -23,4 +23,4 @@ self.mTextureId = textureInfo.name;
 _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 ```
 
-<div align=center><img width="400" height="300" src="https://github.com/Qiyun2014/OpenGL_3.0/blob/master/example_1.png"/></div>
+<div align=center><img width="400" height="300" src="example_1.png"/></div>
