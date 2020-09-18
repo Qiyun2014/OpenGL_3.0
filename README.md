@@ -25,7 +25,7 @@ _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 
 **图例一**
 
-<div align=center><img width="300" height="600" src="example_1.png"/></div>
+<div align=left><img width="300" height="600" src="example_1.png"/></div>
 
 ## 动画
 
@@ -36,7 +36,7 @@ _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 
 **图例二**
 
-<div align=center><img width="300" height="600" src="example_2.gif"/></div>
+<div align=left><img width="300" height="600" src="example_2.gif"/></div>
 
 
 * 多张图片绘制时，可能需要修改透明度(需要开启混合模式, 会占用一定资源)
@@ -61,3 +61,5 @@ _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
     glDisable(GL_BLEND);
 }
 ```
+
+## 生成视频文件
