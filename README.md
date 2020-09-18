@@ -23,4 +23,12 @@ self.mTextureId = textureInfo.name;
 _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
 ```
 
-<div align=center><img width="400" height="300" src="example_1.png"/></div>
+<div align=center><img width="225" height="487" src="example_1.png"/></div>
+
+## 动画
+
+* 通过绘制两张不同的图像
+* 在切换图像过程中，编写shader，添加一些行为（如：旋转、渐变、缩放、移动等）
+* 按指定帧率渲染每一帧图像，得到流畅的动画
+
+<div align=center><img width="225" height="487" src="example_2.png"/></div>
