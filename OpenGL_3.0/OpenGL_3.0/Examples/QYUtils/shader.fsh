@@ -6,29 +6,34 @@ uniform float mTime;
 uniform float chatrlet;
 varying vec2 imagesize;
 varying float transitionType;
-
 uniform float intensity;
 
-// 11x11
+// 9x9
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
 {
-  vec4 color = vec4(0.0);
-  vec2 off1 = vec2(1.411764705882353) * direction;
-  vec2 off2 = vec2(3.2941176470588234) * direction;
-  vec2 off3 = vec2(5.176470588235294) * direction;
-  vec2 off4 = vec2(7.086470588235294) * direction;
-  vec2 off5 = vec2(9.086470588235294) * direction;
-
-  color += texture2D(image, uv) * 0.1947348383;
-  color += texture2D(image, uv + (off1 / resolution)) * 0.2969069646728344;
-  color += texture2D(image, uv - (off1 / resolution)) * 0.2969069646728344;
-  color += texture2D(image, uv + (off2 / resolution)) * 0.15447039785044732;
-  color += texture2D(image, uv - (off2 / resolution)) * 0.15447039785044732;
-  color += texture2D(image, uv + (off3 / resolution)) * 0.080381362401148057;
-  color += texture2D(image, uv - (off3 / resolution)) * 0.080381362401148057;
-  color += texture2D(image, uv + (off4 / resolution)) * 0.010381362401148057;
-  color += texture2D(image, uv - (off4 / resolution)) * 0.010381362401148057;
-  return color;
+    vec4 sum = vec4(0.0);
+    float radius = intensity;
+    vec2 size = radius / resolution;
+    
+    sum += texture2D(image, vec2(uv - 8.0 * size * direction)) * 0.003799;
+    sum += texture2D(image, vec2(uv - 7.0 * size * direction)) * 0.008741;
+    sum += texture2D(image, vec2(uv - 6.0 * size * direction)) * 0.017997;
+    sum += texture2D(image, vec2(uv - 5.0 * size * direction)) * 0.033159;
+    sum += texture2D(image, vec2(uv - 4.0 * size * direction)) * 0.054670;
+    sum += texture2D(image, vec2(uv - 3.0 * size * direction)) * 0.080657;
+    sum += texture2D(image, vec2(uv - 2.0 * size * direction)) * 0.106483;
+    sum += texture2D(image, vec2(uv - 1.0 * size * direction)) * 0.125794;
+    sum += texture2D(image, uv) * 0.137401;
+    sum += texture2D(image, vec2(uv + 1.0 * size * direction)) * 0.125794;
+    sum += texture2D(image, vec2(uv + 2.0 * size * direction)) * 0.106483;
+    sum += texture2D(image, vec2(uv + 3.0 * size * direction)) * 0.080657;
+    sum += texture2D(image, vec2(uv + 4.0 * size * direction)) * 0.054670;
+    sum += texture2D(image, vec2(uv + 5.0 * size * direction)) * 0.033159;
+    sum += texture2D(image, vec2(uv + 6.0 * size * direction)) * 0.017997;
+    sum += texture2D(image, vec2(uv + 7.0 * size * direction)) * 0.008741;
+    sum += texture2D(image, vec2(uv + 8.0 * size * direction)) * 0.003799;
+    
+    return sum;
 }
 
 
@@ -108,7 +113,7 @@ void main()
         if (intensity > 0.0)
         {
             vec2 uv = textureCoordinate.xy;
-            vec2 radius = vec2(intensity, intensity);
+            vec2 radius = vec2(1.0, 1.0);
             textureColor = blur13(inputImageTexture, uv, imagesize, radius);
         }
     }
