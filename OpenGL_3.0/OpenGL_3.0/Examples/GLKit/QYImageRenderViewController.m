@@ -51,6 +51,7 @@
                 break;
                 
             case 1:
+            case 2:
             {
                 slider.minimumValue = 0.0;
                 slider.maximumValue = 360;
@@ -58,8 +59,8 @@
             }
                 break;
                 
-            case 2:
             case 3:
+            case 4:
             {
                 slider.minimumValue = -2;
                 slider.maximumValue = 2;
@@ -67,7 +68,7 @@
             }
                 break;
                 
-            case 4:
+            case 5:
             {
                 slider.minimumValue = 0;
                 slider.maximumValue = 15;
@@ -107,7 +108,7 @@
 
 - (NSArray *)labelTitles
 {
-    return @[@"缩放", @"旋转", @"X轴移动", @"Y轴移动", @"模糊强度"];
+    return @[@"缩放", @"X轴-旋转",@"Y轴-旋转", @"X轴移动", @"Y轴移动", @"模糊强度"];
 }
 
 
@@ -129,17 +130,23 @@
             
         case 3:
         {
-            [self setOffsetPoint:CGPointMake(slider.value, self.offsetPoint.y)];
+            [self setVerticalRotationAngle:slider.value];
         }
             break;
             
         case 4:
         {
-            [self setOffsetPoint:CGPointMake(self.offsetPoint.x, slider.value)];
+            [self setOffsetPoint:CGPointMake(slider.value, self.offsetPoint.y)];
         }
             break;
             
         case 5:
+        {
+            [self setOffsetPoint:CGPointMake(self.offsetPoint.x, slider.value)];
+        }
+            break;
+            
+        case 6:
         {
             [self setIndensity:slider.value];
         }

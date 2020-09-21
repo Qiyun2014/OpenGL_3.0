@@ -12,11 +12,10 @@ uniform float angle_x;
 uniform float angle_y;
 uniform float zoomValue;
 uniform vec2 offset;
+uniform float ratio;
 
 void main()
-{
-    float ratio = pixelsize.x / pixelsize.y;
-    
+{    
     mat4 rotationMatrix = mat4(cos(angle_x) , sin(angle_x) , 0.0, 0.0,
                                -sin(angle_x) * ratio, cos(angle_x) * ratio, 0.0, 0.0,
                                0.0, 0.0, 1.0, 0.0,

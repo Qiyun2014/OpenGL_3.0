@@ -12,18 +12,8 @@ uniform float intensity;
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
 {
     vec4 sum = vec4(0.0);
-    float radius = intensity;
-    vec2 size = radius / resolution;
-    
-    sum += texture2D(image, vec2(uv - 8.0 * size * direction)) * 0.003799;
-    sum += texture2D(image, vec2(uv - 7.0 * size * direction)) * 0.008741;
-    sum += texture2D(image, vec2(uv - 6.0 * size * direction)) * 0.017997;
-    sum += texture2D(image, vec2(uv - 5.0 * size * direction)) * 0.033159;
-    sum += texture2D(image, vec2(uv - 4.0 * size * direction)) * 0.054670;
-    sum += texture2D(image, vec2(uv - 3.0 * size * direction)) * 0.080657;
-    sum += texture2D(image, vec2(uv - 2.0 * size * direction)) * 0.106483;
-    sum += texture2D(image, vec2(uv - 1.0 * size * direction)) * 0.125794;
-    sum += texture2D(image, uv) * 0.137401;
+    vec2 size = intensity / resolution;
+        
     sum += texture2D(image, vec2(uv + 1.0 * size * direction)) * 0.125794;
     sum += texture2D(image, vec2(uv + 2.0 * size * direction)) * 0.106483;
     sum += texture2D(image, vec2(uv + 3.0 * size * direction)) * 0.080657;
@@ -32,6 +22,15 @@ vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
     sum += texture2D(image, vec2(uv + 6.0 * size * direction)) * 0.017997;
     sum += texture2D(image, vec2(uv + 7.0 * size * direction)) * 0.008741;
     sum += texture2D(image, vec2(uv + 8.0 * size * direction)) * 0.003799;
+    sum += texture2D(image, uv) * 0.137401;
+    sum += texture2D(image, vec2(uv - 8.0 * size * direction)) * 0.003799;
+    sum += texture2D(image, vec2(uv - 7.0 * size * direction)) * 0.008741;
+    sum += texture2D(image, vec2(uv - 6.0 * size * direction)) * 0.017997;
+    sum += texture2D(image, vec2(uv - 5.0 * size * direction)) * 0.033159;
+    sum += texture2D(image, vec2(uv - 4.0 * size * direction)) * 0.054670;
+    sum += texture2D(image, vec2(uv - 3.0 * size * direction)) * 0.080657;
+    sum += texture2D(image, vec2(uv - 2.0 * size * direction)) * 0.106483;
+    sum += texture2D(image, vec2(uv - 1.0 * size * direction)) * 0.125794;
     
     return sum;
 }

@@ -51,9 +51,9 @@
 
 
 - (NSArray *)cellForTitles {
-    return @[@"单张图片",
-             @"图片转场",
-             @"图片多个转场切换",
+    return @[@"GLKit-单张图片",
+             @"GLKit-图片转场",
+             @"GLKit-图片多个转场切换",
     ];
 }
 
