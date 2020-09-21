@@ -61,3 +61,5 @@ _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
     glDisable(GL_BLEND);
 }
 ```
+
+## 生成视频文件
