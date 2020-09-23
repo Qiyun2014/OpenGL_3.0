@@ -46,6 +46,8 @@
     return @[@"QYImageRenderViewController",
              @"QYImageTransitionViewController",
              @"QYImageTransitionTypeViewController",
+             @"QYPlayerViewController",
+             @"QYPlayerRenderManagerViewController",
     ];
 }
 
@@ -54,6 +56,8 @@
     return @[@"GLKit-单张图片",
              @"GLKit-图片转场",
              @"GLKit-图片多个转场切换",
+             @"视频解码播放",
+             @"视频解码播放-显示控制"
     ];
 }
 

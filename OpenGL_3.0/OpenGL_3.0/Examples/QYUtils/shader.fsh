@@ -6,13 +6,13 @@ uniform float mTime;
 uniform float chatrlet;
 varying vec2 imagesize;
 varying float transitionType;
-uniform float intensity;
+uniform float indensity;
 
 // 9x9
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
 {
     vec4 sum = vec4(0.0);
-    vec2 size = intensity / resolution;
+    vec2 size = indensity / resolution;
         
     sum += texture2D(image, vec2(uv + 1.0 * size * direction)) * 0.125794;
     sum += texture2D(image, vec2(uv + 2.0 * size * direction)) * 0.106483;
@@ -109,11 +109,31 @@ void main()
         }
     }
     else {
-        if (intensity > 0.0)
+        if (indensity > 0.0)
         {
             vec2 uv = textureCoordinate.xy;
             vec2 radius = vec2(1.0, 1.0);
             textureColor = blur13(inputImageTexture, uv, imagesize, radius);
+        }
+    }
+    
+    
+    // Corner circle on crop
+    float radius = 0.5;
+    vec2 centerCircle = vec2(0.5, 0.5);
+    if (textureCoordinate.y <= 0.5)
+    {
+        float y1 = sqrt(radius * radius - (textureCoordinate.x - centerCircle.x) * (textureCoordinate.x - centerCircle.x)) + centerCircle.y;
+        if (textureCoordinate.y < (1.0 - y1))
+        {
+            textureColor = vec4(1.0, 0.0, 0.0, 1.0);
+        }
+    }
+    else
+    {
+        float y2 = -sqrt(radius * radius - (textureCoordinate.x - centerCircle.x) * (textureCoordinate.x - centerCircle.x)) + centerCircle.y;
+        if (textureCoordinate.y > (1.0 - y2)) {
+            textureColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
     }
 

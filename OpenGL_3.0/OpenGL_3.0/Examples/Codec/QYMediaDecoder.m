@@ -10,34 +10,86 @@
 #import "QYGLUtils.h"
 #import "QYGLContext.h"
 
-NSString *kObserverReaderOutputStatus = @"assetReader.status";
+NSString *kObserverReaderOutputStatus = @"reader.status";
+static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 
-@interface QYMediaDecoder ()
+@interface QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
 
-@property (assign, nonatomic) BOOL isBackground;
-@property (nonatomic, strong) AVAsset   *asset;
+@property (strong, nonatomic) AVPlayer      *player;
+@property (strong, nonatomic) AVURLAsset    *asset;
+@property (strong, nonatomic, nullable) AVAssetReader *reader;
+
+// Class representing a timer bound to the display vsync.
 @property (strong, nonatomic) CADisplayLink *displayLink;
+// A concrete subclass of AVPlayerItemOutput that vends video images as CVPixelBuffers.
+@property (strong, nonatomic) AVPlayerItemVideoOutput *videoOutput;
 
 @end
 
 @implementation QYMediaDecoder
+{
+    id _notificationToken;
+    dispatch_semaphore_t _transcode;
+}
 
 - (id)initWithURL:(NSURL *)URL
 {
     if (self = [super init])
     {
+        _transcode = dispatch_semaphore_create(0);
         [self assetWithURL:URL];
-        
-        self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
-        [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-        [self.displayLink setPaused:YES];
     }
     return self;
 }
 
 
+- (void)dealloc
+{
+    [self cleanup];
+}
+
+- (void)cleanup
+{
+    if (_notificationToken) {
+        [[NSNotificationCenter defaultCenter] removeObserver:_notificationToken
+                                                        name:AVPlayerItemDidPlayToEndTimeNotification
+                                                      object:self.player.currentItem];
+        _notificationToken = nil;
+    }
+    if (_asset) {
+        [_asset cancelLoading];
+        _asset = nil;
+    }
+    if (_reader) {
+        [_reader cancelReading];
+        _reader = nil;
+    }
+    if (_displayLink) {
+        [_displayLink setPaused:YES];
+        [_displayLink invalidate];
+        _displayLink = nil;
+    }
+    if (_videoOutput) {
+        _videoOutput = nil;
+    }
+    if (_player) {
+        [_player cancelPendingPrerolls];
+        [_player pause];
+        _player = nil;
+    }
+    _transcode = nil;
+}
+
 #pragma mark    -   get method
+
+- (AVPlayer *)player
+{
+    if (!_player) {
+        _player = [[AVPlayer alloc] initWithURL:self.asset.URL];
+    }
+    return _player;;
+}
 
 - (AVAssetReader *)reader
 {
@@ -55,38 +107,142 @@ NSString *kObserverReaderOutputStatus = @"assetReader.status";
 }
 
 
-- (AVAssetReaderOutput *)readerOutput
+- (CADisplayLink *)displayLink
 {
-    if (!_readerOutput) {
-        _readerOutput = [[AVAssetReaderOutput alloc] init];
+    if (!_displayLink) {
+        _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
+        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+        [_displayLink setPreferredFramesPerSecond:24];
+        [_displayLink setPaused:YES];
     }
-    return _readerOutput;
+    return _displayLink;
 }
 
 
-#pragma mark    -   public metho
+- (AVPlayerItemVideoOutput *)videoOutput {
+    if (!_videoOutput) {
+        NSDictionary *pixBuffAttributes = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
+                                            (id)kCVPixelBufferOpenGLESTextureCacheCompatibilityKey : @(true),
+                                            (id)kCVPixelBufferIOSurfacePropertiesKey: @{},
+                                            (id)kCVPixelBufferOpenGLCompatibilityKey : @(true),
+#if TARGET_OS_MAC
+//                                            (id)kCVPixelBufferMetalCompatibilityKey : @(true),
+#endif
+        };
+        _videoOutput = [[AVPlayerItemVideoOutput alloc] initWithPixelBufferAttributes:pixBuffAttributes];
+        // Sets the receiver's delegate and a dispatch queue on which the delegate will be called.
+        [_videoOutput setDelegate:self queue:dispatch_queue_create("voe.output.pixelbuffer", DISPATCH_QUEUE_SERIAL)];
+        // Message this method before you suspend your use of a CVDisplayLink or CADisplayLink
+        [_videoOutput requestNotificationOfMediaDataChangeWithAdvanceInterval:0.03];
+    }
+    return _videoOutput;
+}
 
-- (void)startMediaDecoder
+#pragma mark    -   public method
+
+
+- (void)startAsyncDecoder
 {
     if (self.reader && self.reader.status != AVAssetReaderStatusReading)
     {
         [self.reader startReading];
-        [self.displayLink setPaused:NO];
+        [self loopCopyAllSamples];
     } else {
-        NSLog(@"AssetReader status is %ld, current start error", (long)self.reader.status);
+        NSLog(@"AssetReader status is %ld, current error is %@", (long)self.reader.status, self.reader.error);
     }
 }
 
+
+- (void)startFrameRateDecoder
+{
+    if (self.reader && self.reader.status != AVAssetReaderStatusReading)
+    {
+        [self.reader startReading];
+        [self preparePlayback];
+        [self.displayLink setPaused:NO];
+    } else {
+        NSLog(@"AssetReader status is %ld, current error is %@", (long)self.reader.status, self.reader.error);
+    }
+}
+
+
+- (void)updateURL:(NSURL *)URL
+{
+    dispatch_sync([QYGLContext shareImageContext].contextQueue, ^{
+        if (_asset) {
+            [_asset cancelLoading];
+            _asset = nil;
+        }
+        if (_reader) {
+            [_reader cancelReading];
+            _reader = nil;
+        }
+        [self assetWithURL:URL];
+    });
+}
 
 
 #pragma mark    -   private method
 
 
+- (void)loopCopyAllSamples
+{
+    OBJC_WEAK(self);
+    dispatch_async([QYGLContext shareImageContext].contextQueue, ^
+    {
+        OBJC_STRONG(weak_self);
+        while (strong_weak_self.reader.status == AVAssetReaderStatusReading && strong_weak_self.reader.outputs.count > 0)
+        {
+            [strong_weak_self.reader.outputs enumerateObjectsUsingBlock:^(AVAssetReaderOutput * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop)
+            {
+                const CMSampleBufferRef sampleBuffer = [obj copyNextSampleBuffer];
+                if (sampleBuffer) {
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaDecoder:mediaType:didOutputSampleBufferRef:)])
+                    {
+                        [self.delegate mediaDecoder:self mediaType:obj.mediaType didOutputSampleBufferRef:sampleBuffer];
+                    }
+                    NSLog(@"SampleBuffer decode with type = %@", obj.mediaType);
+                    CMSampleBufferInvalidate(sampleBuffer);
+                    CFRelease(sampleBuffer);
+                }
+
+                if (idx + 1 == strong_weak_self.reader.outputs.count) {
+                    dispatch_semaphore_signal(strong_weak_self->_transcode);
+                }
+            }];
+            dispatch_semaphore_wait(strong_weak_self->_transcode, DISPATCH_TIME_FOREVER);
+        }
+        if ([self.delegate respondsToSelector:@selector(didDecoderFinished)]) {
+            [self.delegate didDecoderFinished];
+        }
+        NSLog(@"decode finish or occur failed ...");
+    });
+}
+
+
+
 - (void)displayLinkCallback:(CADisplayLink *)displayLink
 {
-    dispatch_async([QYGLContext shareImageContext].contextQueue, ^{
-        
-    });
+    CMTime outputItemTime = kCMTimeInvalid;
+    
+    // Calculate the nextVsync time which is when the screen will be refreshed next.
+    CFTimeInterval nextVSync = ([displayLink timestamp] + [displayLink duration]);
+    outputItemTime = [[self videoOutput] itemTimeForHostTime:nextVSync];
+    
+    if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime]) {
+        CVPixelBufferRef pixelBuffer = NULL;
+        pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaDecoder:timestamp:didOutputPixelBufferRef:)])
+        {
+            [self.delegate mediaDecoder:self timestamp:outputItemTime didOutputPixelBufferRef:pixelBuffer];
+        }
+        NSLog(@"PixelBuffer decode with ts = %lf", nextVSync);
+        if (pixelBuffer != NULL) {
+            CFRelease(pixelBuffer);
+        }
+    } else {
+        NSLog(@"Unsupport format or application become backgroud ...  %lf", nextVSync);
+    }
 }
 
 
@@ -95,7 +251,8 @@ NSString *kObserverReaderOutputStatus = @"assetReader.status";
     AVURLAsset *urlAsset = [AVURLAsset URLAssetWithURL:url options:@{AVURLAssetPreferPreciseDurationAndTimingKey : @true}];
     if (urlAsset) {
         OBJC_WEAK(self);
-        [urlAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler:^{
+        [urlAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:@"tracks"] completionHandler:^
+        {
             OBJC_STRONG(weak_self);
             NSError *error = nil;
             AVKeyValueStatus tracksStatus = [urlAsset statusOfValueForKey:@"tracks" error:&error];
@@ -104,8 +261,54 @@ NSString *kObserverReaderOutputStatus = @"assetReader.status";
             } else {
                 NSLog(@"Asset loader failed, reason is %@", error.description);
             }
+            dispatch_semaphore_signal(strong_weak_self->_transcode);
         }];
     }
+    dispatch_semaphore_wait(_transcode, DISPATCH_TIME_FOREVER);
+}
+
+
+- (void)preparePlayback
+{
+    OBJC_WEAK(self);
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:self.asset.URL];
+    _notificationToken = [[NSNotificationCenter defaultCenter] addObserverForName:AVPlayerItemDidPlayToEndTimeNotification
+                                                                           object:playerItem
+                                                                            queue:[NSOperationQueue mainQueue]
+                                                                       usingBlock:^(NSNotification *note) {
+        OBJC_STRONG(weak_self);
+        if (strong_weak_self.delegate && [strong_weak_self.delegate respondsToSelector:@selector(didDecoderFinished)]) {
+            [strong_weak_self.delegate didDecoderFinished];
+        }
+        NSLog(@"Deocder finished ...");
+        [strong_weak_self.displayLink setPaused:YES];
+        [strong_weak_self cleanup];
+    }];
+    [playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:AVPlayerItemStatusContext];
+    [self.asset loadValuesAsynchronouslyForKeys:@[@"tracks"] completionHandler:^
+    {
+        if ([self.asset statusOfValueForKey:@"tracks" error:nil] ==  AVKeyValueStatusLoaded)
+        {
+            NSArray *videoTracks = [self.asset tracksWithMediaType:AVMediaTypeVideo];
+            if ([videoTracks count] > 0) {
+                AVAssetTrack *videoTrack = videoTracks.firstObject;
+                [videoTrack loadValuesAsynchronouslyForKeys:@[@"preferredTransform"] completionHandler:^{
+                    if ([videoTrack statusOfValueForKey:@"preferredTransform" error:nil] == AVKeyValueStatusLoaded) {
+                        // CGAffineTransform preferredTransform = [videoTrack preferredTransform];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            OBJC_STRONG(weak_self);
+                            if (![playerItem.outputs containsObject:strong_weak_self.videoOutput]) {
+                                [playerItem addOutput:strong_weak_self.videoOutput];
+                            }
+                            [strong_weak_self.player replaceCurrentItemWithPlayerItem:playerItem];
+                            [strong_weak_self.videoOutput requestNotificationOfMediaDataChangeWithAdvanceInterval:0.03];
+                            [strong_weak_self.player play];
+                        });
+                    }
+                }];
+            }
+        }
+    }];
 }
 
 
@@ -115,7 +318,8 @@ NSString *kObserverReaderOutputStatus = @"assetReader.status";
     {
         [asset.tracks enumerateObjectsUsingBlock:^(AVAssetTrack * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop)
         {
-            AVAssetReaderTrackOutput *trackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:obj outputSettings:[self outputSettingsWithMediaType:obj.mediaType]];
+            AVAssetReaderTrackOutput *trackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:obj
+                                                                                               outputSettings:[self outputSettingsWithMediaType:obj.mediaType]];
             if ([reader canAddOutput:trackOutput])
             {
                 trackOutput.alwaysCopiesSampleData = NO;
@@ -143,5 +347,87 @@ NSString *kObserverReaderOutputStatus = @"assetReader.status";
     return nil;
 }
 
+
+#pragma mark    -   kvo
+
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    
+    if ([keyPath isEqualToString:kObserverReaderOutputStatus])
+    {
+        switch (self.reader.status)
+        {
+            case AVAssetReaderStatusReading:
+                NSLog(@"decode video of status is reading ...");
+                break;
+                
+            case AVAssetReaderStatusCompleted:
+                NSLog(@"decode video of status is completed ...");
+                [self removeObserver:self forKeyPath:@"reader.status"];
+                break;
+                
+            case AVAssetReaderStatusFailed:
+                NSLog(@"decode video of status is failed ...");
+                break;
+                
+            case AVAssetReaderStatusCancelled:
+                NSLog(@"decode video of status is cancelled ...");
+                break;
+                
+            default:
+                break;
+        }
+    }
+    else if (context == AVPlayerItemStatusContext) {
+        
+        AVPlayerStatus status = [change[NSKeyValueChangeNewKey] integerValue];
+        switch (status) {
+            case AVPlayerItemStatusUnknown:
+                
+                break;
+            case AVPlayerItemStatusReadyToPlay:
+                NSLog(@"Player of prepare to play ...");
+                break;
+            case AVPlayerItemStatusFailed:
+                NSLog(@"Player item status failed, error is %@", self.player.currentItem.error);
+                break;
+        }
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+
+
+#pragma mark    -   AVPlayerItemOutputPullDelegate
+
+ /*!
+    @method            outputMediaDataWillChange:
+    @abstract        A method invoked once, prior to a new sample, if the AVPlayerItemOutput sender was previously messaged requestNotificationOfMediaDataChangeWithAdvanceInterval:.
+    @discussion
+        This method is invoked once after the sender is messaged requestNotificationOfMediaDataChangeWithAdvanceInterval:.
+  */
+
+- (void)outputMediaDataWillChange:(AVPlayerItemOutput *)sender API_AVAILABLE(macos(10.8), ios(6.0), tvos(9.0), watchos(1.0)) {
+ 
+    NSLog(@"output media data will change ...");
+    
+    // Restart display link.
+    [[self displayLink] setPaused:NO];
+}
+
+
+ /*!
+    @method            outputSequenceWasFlushed:
+    @abstract        A method invoked when the output is commencing a new sequence.
+    @discussion
+        This method is invoked after any seeking and change in playback direction. If you are maintaining any queued future samples, copied previously, you may want to discard these after receiving this message.
+  */
+
+- (void)outputSequenceWasFlushed:(AVPlayerItemOutput *)output API_AVAILABLE(macos(10.8), ios(6.0), tvos(9.0), watchos(1.0)) {
+    
+    NSLog(@"output sequence was flushed ...");
+}
 
 @end

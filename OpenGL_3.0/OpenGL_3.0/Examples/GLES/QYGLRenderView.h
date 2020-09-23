@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) float zoom;
 // draw position offset
 @property (nonatomic, assign) CGPoint offsetPoint;
-// some effect of intensity, such as zoom blur, anging from 0.0 on up, with a default of 0.0
-@property (nonatomic, assign) float  intensity;
+// some effect of indensity, such as zoom blur, anging from 0.0 on up, with a default of 0.0
+@property (nonatomic, assign) float  indensity;
 
 // Display object for UIImage
 @property (nonatomic, strong) UIImage   *displayImage;

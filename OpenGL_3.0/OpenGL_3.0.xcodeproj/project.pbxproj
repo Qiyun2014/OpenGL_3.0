@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */; };
+		AB4D0255251992870006DC2B /* JJTM2837.mov in Resources */ = {isa = PBXBuildFile; fileRef = AB4D0254251992870006DC2B /* JJTM2837.mov */; };
+		AB4D026F2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */; };
 		AB549D0F25188258003A7B30 /* QYGLRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB549D0E25188258003A7B30 /* QYGLRenderView.m */; };
 		AB5992E825144BCA00247AE4 /* QYImageTransitionTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5992E725144BCA00247AE4 /* QYImageTransitionTypeViewController.m */; };
 		AB5992EA25149B7F00247AE4 /* theme.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB5992E925149B7F00247AE4 /* theme.jpg */; };
@@ -48,6 +51,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB4D024B2519921B0006DC2B /* QYPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerViewController.h; sourceTree = "<group>"; };
+		AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerViewController.m; sourceTree = "<group>"; };
+		AB4D0254251992870006DC2B /* JJTM2837.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = JJTM2837.mov; sourceTree = "<group>"; };
+		AB4D026D2519E9F50006DC2B /* QYPlayerRenderManagerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerRenderManagerViewController.h; sourceTree = "<group>"; };
+		AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerRenderManagerViewController.m; sourceTree = "<group>"; };
 		AB549D0D25188258003A7B30 /* QYGLRenderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLRenderView.h; sourceTree = "<group>"; };
 		AB549D0E25188258003A7B30 /* QYGLRenderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLRenderView.m; sourceTree = "<group>"; };
 		AB5992E625144BCA00247AE4 /* QYImageTransitionTypeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYImageTransitionTypeViewController.h; sourceTree = "<group>"; };
@@ -113,6 +121,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB4D024A251991F40006DC2B /* VCS */ = {
+			isa = PBXGroup;
+			children = (
+				AB549D0B251881C6003A7B30 /* GLKit */,
+				AB4D024B2519921B0006DC2B /* QYPlayerViewController.h */,
+				AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */,
+				AB4D026D2519E9F50006DC2B /* QYPlayerRenderManagerViewController.h */,
+				AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */,
+			);
+			path = VCS;
+			sourceTree = "<group>";
+		};
 		AB549D0B251881C6003A7B30 /* GLKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +180,7 @@
 		AB8522DE2513402A0021D179 /* OpenGL_3.0 */ = {
 			isa = PBXGroup;
 			children = (
+				AB4D0254251992870006DC2B /* JJTM2837.mov */,
 				AB852314251340BC0021D179 /* Examples */,
 				AB8522DF2513402A0021D179 /* AppDelegate.h */,
 				AB8522E02513402A0021D179 /* AppDelegate.m */,
@@ -197,10 +218,10 @@
 		AB852314251340BC0021D179 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				AB4D024A251991F40006DC2B /* VCS */,
 				AB9E5B9F2518A3A200A1D9F3 /* Codec */,
 				AB549D0C2518822F003A7B30 /* GLES */,
 				AB85231B251343350021D179 /* QYUtils */,
-				AB549D0B251881C6003A7B30 /* GLKit */,
 				AB5992E925149B7F00247AE4 /* theme.jpg */,
 				AB85232625134DD00021D179 /* yourname.png */,
 			);
@@ -337,6 +358,7 @@
 				AB5992EA25149B7F00247AE4 /* theme.jpg in Resources */,
 				AB8522EF2513402C0021D179 /* LaunchScreen.storyboard in Resources */,
 				AB8522EC2513402C0021D179 /* Assets.xcassets in Resources */,
+				AB4D0255251992870006DC2B /* JJTM2837.mov in Resources */,
 				AB85232725134DD00021D179 /* yourname.png in Resources */,
 				AB8522EA2513402A0021D179 /* Main.storyboard in Resources */,
 			);
@@ -364,6 +386,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB549D0F25188258003A7B30 /* QYGLRenderView.m in Sources */,
+				AB4D026F2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m in Sources */,
 				AB8522E72513402A0021D179 /* ViewController.m in Sources */,
 				AB85232C251354060021D179 /* QYImageTransitionViewController.m in Sources */,
 				AB85231A251341760021D179 /* QYGLViewController.m in Sources */,
@@ -373,6 +396,7 @@
 				AB9E5BA22518A3DA00A1D9F3 /* QYMediaDecoder.m in Sources */,
 				AB8523212513452A0021D179 /* QYGLUtils.m in Sources */,
 				AB8522F22513402C0021D179 /* main.m in Sources */,
+				AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */,
 				AB8522E42513402A0021D179 /* SceneDelegate.m in Sources */,
 				AB852317251340F20021D179 /* QYImageRenderViewController.m in Sources */,
 			);
@@ -480,7 +504,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -533,7 +557,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -548,7 +572,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CFD2JZRN22;
 				INFOPLIST_FILE = OpenGL_3.0/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -566,7 +590,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CFD2JZRN22;
 				INFOPLIST_FILE = OpenGL_3.0/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

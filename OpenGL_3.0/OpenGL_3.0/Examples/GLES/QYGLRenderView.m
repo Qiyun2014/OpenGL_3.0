@@ -28,8 +28,8 @@ enum
     GL_SIZE,
     GL_RATIO,
     GL_OFFSET,
-    GL_TRANSITION_TYPE,
-    GL_INTENSITY,
+    GL_INDENSITY,
+    GL_CHARTLET,
     GL_UNIFORMS
 };
 GLint gl_uniforms[GL_UNIFORMS];
@@ -61,7 +61,6 @@ GLint gl_uniforms[GL_UNIFORMS];
     
     const GLfloat *_preferredConversion;
     CGRect  _layerBounds;
-    GLuint  _beforeTexture;
     float   _timeValue;
     
     GLuint  _imageTextureId;
@@ -94,12 +93,37 @@ GLint gl_uniforms[GL_UNIFORMS];
     return self;
 }
 
+- (void)dealloc
+{
+    if (_colorBufferHandle) {
+        glDeleteRenderbuffers(1, &_colorBufferHandle);
+        _colorBufferHandle = 0;
+    }
+    if (_frameBufferHandle) {
+        glDeleteFramebuffers(1, &_frameBufferHandle);
+        _frameBufferHandle = 0;
+    }
+    if (_program) {
+        glDeleteProgram(_program);
+        _program = 0;
+    }
+    [self cleanUpTextures];
+    [[QYGLContext shareImageContext] cleanup];
+    
+    _callbacksLock = nil;
+}
+
 #pragma mark    -   private method
 
 - (void)compileShaders
 {
-    [QYGLUtils gl_programAndCompileShader:@""
-                                 fragment:@""
+    NSString *fsh = [[NSBundle mainBundle] pathForResource:@"shader" ofType:@"fsh"];
+    NSString *vsh = [[NSBundle mainBundle] pathForResource:@"shader" ofType:@"vsh"];
+    NSString *fSource = [NSString stringWithContentsOfFile:fsh encoding:NSUTF8StringEncoding error:nil];
+    NSString *vSource = [NSString stringWithContentsOfFile:vsh encoding:NSUTF8StringEncoding error:nil];
+    
+    [QYGLUtils gl_programAndCompileShader:vSource
+                                 fragment:fSource
                   untilBindAttributeBlock:^(GLuint program){
         // Bind attribute locations. This needs to be done prior to linking.
         glBindAttribLocation(program, ATTRIB_VERTEX, "position");
@@ -118,8 +142,8 @@ GLint gl_uniforms[GL_UNIFORMS];
             "pixelsize",
             "ratio",
             "offset",
-            "transitionType",
-            "intensity",
+            "indensity",
+            "chatrlet",
         };
         
         for (int i = 0; i < GL_UNIFORMS; i ++) {
@@ -140,14 +164,7 @@ GLint gl_uniforms[GL_UNIFORMS];
     
     glUniform1i(gl_uniforms[GL_SAMPLE], 0);
 
-    // Create CVOpenGLESTextureCacheRef for optimal CVPixelBufferRef to GLES texture conversion.
-    if (!_videoTextureCache) {
-        CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [QYGLContext shareImageContext].context, NULL, &_videoTextureCache);
-        if (err != noErr) {
-            NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
-            return;
-        }
-    }
+    _videoTextureCache = [QYGLContext shareImageContext].glTextureCache;
     [self setupBuffers];
 }
 
@@ -230,10 +247,10 @@ GLint gl_uniforms[GL_UNIFORMS];
 }
 
 
-- (void)setIntensity:(float)intensity
+- (void)setIndensity:(float)indensity
 {
-    glUniform1f(gl_uniforms[GL_INTENSITY], intensity);
-    _intensity = intensity;
+    glUniform1f(gl_uniforms[GL_INDENSITY], indensity);
+    _indensity = indensity;
 }
 
 
@@ -285,7 +302,7 @@ GLint gl_uniforms[GL_UNIFORMS];
             glUniform1f(gl_uniforms[GL_ANGLE_X], (_rotationAngle * M_PI) / 180.0);
             glUniform1f(gl_uniforms[GL_ANGLE_Y], (_verticalRotationAngle * M_PI) / 180.0);
             glUniform2f(gl_uniforms[GL_OFFSET], _offsetPoint.x, _offsetPoint.y);
-            glUniform1f(gl_uniforms[GL_INTENSITY], _intensity);
+            glUniform1f(gl_uniforms[GL_INDENSITY], _indensity);
             
             glUniform1f(gl_uniforms[GL_RATIO], size.width / size.height);
             glUniform2f(gl_uniforms[GL_SIZE], size.width, size.height);
@@ -298,8 +315,7 @@ GLint gl_uniforms[GL_UNIFORMS];
             glUniform1f(gl_uniforms[GL_ANGLE_X], 0.0);
             glUniform1f(gl_uniforms[GL_ANGLE_Y], 0.0);
             glUniform2f(gl_uniforms[GL_OFFSET], 0.0, 0.0);
-            glUniform1f(gl_uniforms[GL_INTENSITY], 0.0);
-            glUniform1f(gl_uniforms[GL_TRANSITION_TYPE], 0.0);
+            glUniform1f(gl_uniforms[GL_INDENSITY], 0.0);
         }
     });
 }
@@ -311,6 +327,7 @@ GLint gl_uniforms[GL_UNIFORMS];
         
         self.pixelWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
         self.pixelHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
+        self.presentationRect = CGSizeMake(self.pixelWidth, self.pixelHeight);
         
         CVReturn err;
         if (pixelBuffer != NULL) {
@@ -355,13 +372,14 @@ GLint gl_uniforms[GL_UNIFORMS];
         
         // Use shader program.
         glUseProgram(self.program);
-        // reset
-        glUniform1f(gl_uniforms[GL_ZOOM], 1.0);
-        glUniform1f(gl_uniforms[GL_ANGLE_X], 0.0);
-        glUniform1f(gl_uniforms[GL_ANGLE_Y], 0.0);
-        glUniform2f(gl_uniforms[GL_OFFSET], 0.0, 0.0);
-        glUniform1f(gl_uniforms[GL_INTENSITY], 0.0);
-        glUniform1f(gl_uniforms[GL_TRANSITION_TYPE], 0.0);
+        glUniform1f(gl_uniforms[GL_ZOOM], _zoom);
+        glUniform1f(gl_uniforms[GL_ANGLE_X], (_rotationAngle * M_PI) / 180.0);
+        glUniform1f(gl_uniforms[GL_ANGLE_Y], (_verticalRotationAngle * M_PI) / 180.0);
+        glUniform2f(gl_uniforms[GL_OFFSET], _offsetPoint.x, _offsetPoint.y);
+        glUniform1f(gl_uniforms[GL_INDENSITY], _indensity);
+        
+        glUniform1f(gl_uniforms[GL_RATIO], _layerBounds.size.width / _layerBounds.size.height);
+        glUniform2f(gl_uniforms[GL_SIZE], self.pixelWidth, self.pixelHeight);
         
         [self drawTexture];
     });
