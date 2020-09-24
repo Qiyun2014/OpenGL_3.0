@@ -7,6 +7,7 @@
 //
 
 #import "QYPlayerRenderManagerViewController.h"
+#import "QYMediaDecoder.h"
 
 @interface QYPlayerRenderManagerViewController ()
 
@@ -17,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+
     [[self labelTitles] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
         UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(80, CGRectGetHeight(self.view.bounds) - 60 - 45 * idx, CGRectGetWidth(self.view.bounds) - 100, 20)];
@@ -121,14 +122,9 @@
     }
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)mediaDecoder:(QYMediaDecoder *)mediaDecoder timestamp:(CMTime)ts didOutputPixelBufferRef:(CVPixelBufferRef)pixelBuffer
+{
+    [self.renderView displayPixelBuffer:pixelBuffer timestamp:ts];
 }
-*/
 
 @end

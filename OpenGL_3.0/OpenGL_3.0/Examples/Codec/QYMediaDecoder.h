@@ -12,7 +12,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 
-enum QYMediaStatusError {
+enum QYMediaStatusError
+{
     MediaStatusNone = 0,
     MediaStatusFileNotExist,
     MediaStatusOperationError,

@@ -7,6 +7,54 @@ uniform float chatrlet;
 varying vec2 imagesize;
 varying float transitionType;
 uniform float indensity;
+varying float pixelRatio;
+
+
+vec4 multiScreen(sampler2D inputImageTexture, vec2 textureCoordinate)
+{
+    // 2 row and 3 cols
+    vec2 range = vec2(2.0, 3.0);
+    mediump vec2 p = mod(range  * textureCoordinate - vec2( 1.0 ), 1.0);
+    lowp vec4 outputColor = texture2D(inputImageTexture, p);
+    return outputColor;
+}
+
+
+vec4 cornerBolder(vec4 textureColor, float corner)
+{
+    // Corner circle on crop
+    float radius = 0.5;
+    // full screen radius size
+    float fullRadius = sqrt(radius);
+    // corner size of radius scale
+    float cornerRadius = corner / imagesize.x / radius;
+    // last radius size
+    radius = fullRadius - cornerRadius;
+    // center circle of point
+    vec2 centerCircle = vec2(0.5, 0.5);
+    // the top half part
+    if (textureCoordinate.y <= centerCircle.y)
+    {
+        // R^2 = X^2 + Y^2 (formula)
+        float y1 = sqrt(radius * radius - (textureCoordinate.x - centerCircle.x) * (textureCoordinate.x - centerCircle.x)) + centerCircle.y;
+        if (textureCoordinate.y <= (1.0 - y1) / pixelRatio)
+        {
+            textureColor = vec4(1.0, 1.0, 1.0, 0.0);
+        }
+    }
+    // the down half part
+    else
+    {
+        float y2 = -sqrt(radius * radius - (textureCoordinate.x - centerCircle.x) * (textureCoordinate.x - centerCircle.x)) + centerCircle.y;
+        if (textureCoordinate.y >= (1.0 - y2 / pixelRatio))
+        {
+            textureColor = vec4(1.0, 1.0, 1.0, 0.0);
+        }
+    }
+    return textureColor;
+}
+
+
 
 // 9x9
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
@@ -42,10 +90,8 @@ void main()
     
     if (chatrlet == 1.0)
     {
-        if (transitionType == 0.0) {
-            
-        }
-        else if (transitionType == 1.0) {
+       if (transitionType == 1.0)
+       {
             float duration = 1.0;
             float progress = mod(mTime, duration) / duration * 2.0;
             float seg = 8.0;
@@ -115,27 +161,10 @@ void main()
             vec2 radius = vec2(1.0, 1.0);
             textureColor = blur13(inputImageTexture, uv, imagesize, radius);
         }
-    }
-    
-    
-    // Corner circle on crop
-    float radius = 0.5;
-    vec2 centerCircle = vec2(0.5, 0.5);
-    if (textureCoordinate.y <= 0.5)
-    {
-        float y1 = sqrt(radius * radius - (textureCoordinate.x - centerCircle.x) * (textureCoordinate.x - centerCircle.x)) + centerCircle.y;
-        if (textureCoordinate.y < (1.0 - y1))
-        {
-            textureColor = vec4(1.0, 0.0, 0.0, 1.0);
+        
+        if (mTime > 0.0) {
+            textureColor = cornerBolder(textureColor, mTime * 10.0);
         }
     }
-    else
-    {
-        float y2 = -sqrt(radius * radius - (textureCoordinate.x - centerCircle.x) * (textureCoordinate.x - centerCircle.x)) + centerCircle.y;
-        if (textureCoordinate.y > (1.0 - y2)) {
-            textureColor = vec4(1.0, 0.0, 0.0, 1.0);
-        }
-    }
-
     gl_FragColor = textureColor;
 }

@@ -10,6 +10,18 @@
 		AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */; };
 		AB4D0255251992870006DC2B /* JJTM2837.mov in Resources */ = {isa = PBXBuildFile; fileRef = AB4D0254251992870006DC2B /* JJTM2837.mov */; };
 		AB4D026F2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */; };
+		AB4F69B9251B1F400053325C /* QYMediaEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4F69B8251B1F400053325C /* QYMediaEncoder.m */; };
+		AB4F69C0251B39870053325C /* QYPlayerRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4F69BF251B39870053325C /* QYPlayerRecordViewController.m */; };
+		AB4F69C7251B6AA90053325C /* QYGLRenderTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4F69C6251B6AA90053325C /* QYGLRenderTexture.m */; };
+		AB4F69CC251B6AF20053325C /* default.vsh in Resources */ = {isa = PBXBuildFile; fileRef = AB4F69CB251B6AF20053325C /* default.vsh */; };
+		AB4F69D1251B6AFC0053325C /* default.fsh in Resources */ = {isa = PBXBuildFile; fileRef = AB4F69D0251B6AFC0053325C /* default.fsh */; };
+		AB5463DA251C3B6A00A07163 /* QYPlayerFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463D9251C3B6A00A07163 /* QYPlayerFilterViewController.m */; };
+		AB5463E0251C3FF700A07163 /* QYGLTextureOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463DF251C3FF700A07163 /* QYGLTextureOutput.m */; };
+		AB5463E7251C48AB00A07163 /* QYGLImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463E6251C48AB00A07163 /* QYGLImageFilter.m */; };
+		AB5463EF251C49BF00A07163 /* filter.fsh in Resources */ = {isa = PBXBuildFile; fileRef = AB5463EE251C49BF00A07163 /* filter.fsh */; };
+		AB5463F4251C4DF200A07163 /* LUTSource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = AB5463F3251C4DF200A07163 /* LUTSource.bundle */; };
+		AB546400251C822800A07163 /* QYGLOutputPixelBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463FF251C822800A07163 /* QYGLOutputPixelBuffer.m */; };
+		AB546406251C913300A07163 /* QYPixelBufferWriterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */; };
 		AB549D0F25188258003A7B30 /* QYGLRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB549D0E25188258003A7B30 /* QYGLRenderView.m */; };
 		AB5992E825144BCA00247AE4 /* QYImageTransitionTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5992E725144BCA00247AE4 /* QYImageTransitionTypeViewController.m */; };
 		AB5992EA25149B7F00247AE4 /* theme.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB5992E925149B7F00247AE4 /* theme.jpg */; };
@@ -56,6 +68,26 @@
 		AB4D0254251992870006DC2B /* JJTM2837.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = JJTM2837.mov; sourceTree = "<group>"; };
 		AB4D026D2519E9F50006DC2B /* QYPlayerRenderManagerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerRenderManagerViewController.h; sourceTree = "<group>"; };
 		AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerRenderManagerViewController.m; sourceTree = "<group>"; };
+		AB4F69B7251B1F400053325C /* QYMediaEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYMediaEncoder.h; sourceTree = "<group>"; };
+		AB4F69B8251B1F400053325C /* QYMediaEncoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYMediaEncoder.m; sourceTree = "<group>"; };
+		AB4F69BE251B39870053325C /* QYPlayerRecordViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerRecordViewController.h; sourceTree = "<group>"; };
+		AB4F69BF251B39870053325C /* QYPlayerRecordViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerRecordViewController.m; sourceTree = "<group>"; };
+		AB4F69C5251B6AA90053325C /* QYGLRenderTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLRenderTexture.h; sourceTree = "<group>"; };
+		AB4F69C6251B6AA90053325C /* QYGLRenderTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLRenderTexture.m; sourceTree = "<group>"; };
+		AB4F69CB251B6AF20053325C /* default.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = default.vsh; sourceTree = "<group>"; };
+		AB4F69D0251B6AFC0053325C /* default.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = default.fsh; sourceTree = "<group>"; };
+		AB5463D8251C3B6A00A07163 /* QYPlayerFilterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerFilterViewController.h; sourceTree = "<group>"; };
+		AB5463D9251C3B6A00A07163 /* QYPlayerFilterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerFilterViewController.m; sourceTree = "<group>"; };
+		AB5463DE251C3FF700A07163 /* QYGLTextureOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLTextureOutput.h; sourceTree = "<group>"; };
+		AB5463DF251C3FF700A07163 /* QYGLTextureOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLTextureOutput.m; sourceTree = "<group>"; };
+		AB5463E5251C48AB00A07163 /* QYGLImageFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLImageFilter.h; sourceTree = "<group>"; };
+		AB5463E6251C48AB00A07163 /* QYGLImageFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLImageFilter.m; sourceTree = "<group>"; };
+		AB5463EE251C49BF00A07163 /* filter.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = filter.fsh; sourceTree = "<group>"; };
+		AB5463F3251C4DF200A07163 /* LUTSource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = LUTSource.bundle; sourceTree = "<group>"; };
+		AB5463FE251C822800A07163 /* QYGLOutputPixelBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLOutputPixelBuffer.h; sourceTree = "<group>"; };
+		AB5463FF251C822800A07163 /* QYGLOutputPixelBuffer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLOutputPixelBuffer.m; sourceTree = "<group>"; };
+		AB546404251C913300A07163 /* QYPixelBufferWriterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPixelBufferWriterViewController.h; sourceTree = "<group>"; };
+		AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPixelBufferWriterViewController.m; sourceTree = "<group>"; };
 		AB549D0D25188258003A7B30 /* QYGLRenderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLRenderView.h; sourceTree = "<group>"; };
 		AB549D0E25188258003A7B30 /* QYGLRenderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLRenderView.m; sourceTree = "<group>"; };
 		AB5992E625144BCA00247AE4 /* QYImageTransitionTypeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYImageTransitionTypeViewController.h; sourceTree = "<group>"; };
@@ -129,8 +161,30 @@
 				AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */,
 				AB4D026D2519E9F50006DC2B /* QYPlayerRenderManagerViewController.h */,
 				AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */,
+				AB4F69BE251B39870053325C /* QYPlayerRecordViewController.h */,
+				AB4F69BF251B39870053325C /* QYPlayerRecordViewController.m */,
+				AB5463D8251C3B6A00A07163 /* QYPlayerFilterViewController.h */,
+				AB5463D9251C3B6A00A07163 /* QYPlayerFilterViewController.m */,
+				AB546404251C913300A07163 /* QYPixelBufferWriterViewController.h */,
+				AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */,
 			);
 			path = VCS;
+			sourceTree = "<group>";
+		};
+		AB5463E4251C488700A07163 /* QYGLFilter */ = {
+			isa = PBXGroup;
+			children = (
+				AB5463E5251C48AB00A07163 /* QYGLImageFilter.h */,
+				AB5463E6251C48AB00A07163 /* QYGLImageFilter.m */,
+				AB5463FE251C822800A07163 /* QYGLOutputPixelBuffer.h */,
+				AB5463FF251C822800A07163 /* QYGLOutputPixelBuffer.m */,
+				AB4F69C5251B6AA90053325C /* QYGLRenderTexture.h */,
+				AB4F69C6251B6AA90053325C /* QYGLRenderTexture.m */,
+				AB5463DE251C3FF700A07163 /* QYGLTextureOutput.h */,
+				AB5463DF251C3FF700A07163 /* QYGLTextureOutput.m */,
+				AB5463EE251C49BF00A07163 /* filter.fsh */,
+			);
+			path = QYGLFilter;
 			sourceTree = "<group>";
 		};
 		AB549D0B251881C6003A7B30 /* GLKit */ = {
@@ -151,8 +205,11 @@
 		AB549D0C2518822F003A7B30 /* GLES */ = {
 			isa = PBXGroup;
 			children = (
+				AB5463E4251C488700A07163 /* QYGLFilter */,
 				AB549D0D25188258003A7B30 /* QYGLRenderView.h */,
 				AB549D0E25188258003A7B30 /* QYGLRenderView.m */,
+				AB4F69CB251B6AF20053325C /* default.vsh */,
+				AB4F69D0251B6AFC0053325C /* default.fsh */,
 			);
 			path = GLES;
 			sourceTree = "<group>";
@@ -180,6 +237,7 @@
 		AB8522DE2513402A0021D179 /* OpenGL_3.0 */ = {
 			isa = PBXGroup;
 			children = (
+				AB5463F3251C4DF200A07163 /* LUTSource.bundle */,
 				AB4D0254251992870006DC2B /* JJTM2837.mov */,
 				AB852314251340BC0021D179 /* Examples */,
 				AB8522DF2513402A0021D179 /* AppDelegate.h */,
@@ -246,6 +304,8 @@
 			children = (
 				AB9E5BA02518A3DA00A1D9F3 /* QYMediaDecoder.h */,
 				AB9E5BA12518A3DA00A1D9F3 /* QYMediaDecoder.m */,
+				AB4F69B7251B1F400053325C /* QYMediaEncoder.h */,
+				AB4F69B8251B1F400053325C /* QYMediaEncoder.m */,
 			);
 			path = Codec;
 			sourceTree = "<group>";
@@ -355,9 +415,13 @@
 			files = (
 				AB852325251346A10021D179 /* shader.fsh in Resources */,
 				AB8523232513468F0021D179 /* shader.vsh in Resources */,
+				AB4F69CC251B6AF20053325C /* default.vsh in Resources */,
+				AB4F69D1251B6AFC0053325C /* default.fsh in Resources */,
 				AB5992EA25149B7F00247AE4 /* theme.jpg in Resources */,
 				AB8522EF2513402C0021D179 /* LaunchScreen.storyboard in Resources */,
 				AB8522EC2513402C0021D179 /* Assets.xcassets in Resources */,
+				AB5463F4251C4DF200A07163 /* LUTSource.bundle in Resources */,
+				AB5463EF251C49BF00A07163 /* filter.fsh in Resources */,
 				AB4D0255251992870006DC2B /* JJTM2837.mov in Resources */,
 				AB85232725134DD00021D179 /* yourname.png in Resources */,
 				AB8522EA2513402A0021D179 /* Main.storyboard in Resources */,
@@ -387,18 +451,26 @@
 			files = (
 				AB549D0F25188258003A7B30 /* QYGLRenderView.m in Sources */,
 				AB4D026F2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m in Sources */,
+				AB546400251C822800A07163 /* QYGLOutputPixelBuffer.m in Sources */,
 				AB8522E72513402A0021D179 /* ViewController.m in Sources */,
 				AB85232C251354060021D179 /* QYImageTransitionViewController.m in Sources */,
 				AB85231A251341760021D179 /* QYGLViewController.m in Sources */,
+				AB5463DA251C3B6A00A07163 /* QYPlayerFilterViewController.m in Sources */,
+				AB4F69B9251B1F400053325C /* QYMediaEncoder.m in Sources */,
 				AB5992E825144BCA00247AE4 /* QYImageTransitionTypeViewController.m in Sources */,
+				AB4F69C7251B6AA90053325C /* QYGLRenderTexture.m in Sources */,
+				AB546406251C913300A07163 /* QYPixelBufferWriterViewController.m in Sources */,
 				AB8522E12513402A0021D179 /* AppDelegate.m in Sources */,
 				AB85231E251343520021D179 /* QYGLContext.m in Sources */,
 				AB9E5BA22518A3DA00A1D9F3 /* QYMediaDecoder.m in Sources */,
 				AB8523212513452A0021D179 /* QYGLUtils.m in Sources */,
 				AB8522F22513402C0021D179 /* main.m in Sources */,
+				AB5463E7251C48AB00A07163 /* QYGLImageFilter.m in Sources */,
 				AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */,
 				AB8522E42513402A0021D179 /* SceneDelegate.m in Sources */,
+				AB4F69C0251B39870053325C /* QYPlayerRecordViewController.m in Sources */,
 				AB852317251340F20021D179 /* QYImageRenderViewController.m in Sources */,
+				AB5463E0251C3FF700A07163 /* QYGLTextureOutput.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

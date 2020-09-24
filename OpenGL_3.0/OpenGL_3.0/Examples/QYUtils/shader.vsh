@@ -7,6 +7,7 @@ uniform vec2 pixelsize;
 uniform float type;
 varying float transitionType;
 varying vec2 imagesize;
+varying float pixelRatio;
 
 uniform float angle_x;
 uniform float angle_y;
@@ -43,7 +44,8 @@ void main()
         gl_Position = position;
     }
 
-    textureCoordinate = inputTextureCoordinate.xy;
-    transitionType = type;
-    imagesize = pixelsize;
+    textureCoordinate   = inputTextureCoordinate.xy;
+    transitionType      = type;
+    imagesize           = pixelsize;
+    pixelRatio          = ratio;
 }

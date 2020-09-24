@@ -2,7 +2,7 @@
 //  QYImageTransitionTypeViewController.m
 //  OpenGL_3.0
 //
-//  Created by 祁云 on 2020/9/18.
+//  Created by 祁云 on 2020/9/21.
 //  Copyright © 2020 祁云. All rights reserved.
 //
 

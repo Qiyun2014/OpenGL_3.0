@@ -30,6 +30,7 @@ enum
     GL_OFFSET,
     GL_INDENSITY,
     GL_CHARTLET,
+    GL_TIME,
     GL_UNIFORMS
 };
 GLint gl_uniforms[GL_UNIFORMS];
@@ -61,7 +62,7 @@ GLint gl_uniforms[GL_UNIFORMS];
     
     const GLfloat *_preferredConversion;
     CGRect  _layerBounds;
-    float   _timeValue;
+    CMTime   _timeValue;
     
     GLuint  _imageTextureId;
 }
@@ -144,6 +145,7 @@ GLint gl_uniforms[GL_UNIFORMS];
             "offset",
             "indensity",
             "chatrlet",
+            "mTime",
         };
         
         for (int i = 0; i < GL_UNIFORMS; i ++) {
@@ -321,10 +323,10 @@ GLint gl_uniforms[GL_UNIFORMS];
 }
 
 
-- (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer {
-    
-    dispatch_sync([QYGLContext shareImageContext].contextQueue, ^{
-        
+- (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer
+{    
+    dispatch_sync([QYGLContext shareImageContext].contextQueue, ^
+    {
         self.pixelWidth = (int)CVPixelBufferGetWidth(pixelBuffer);
         self.pixelHeight = (int)CVPixelBufferGetHeight(pixelBuffer);
         self.presentationRect = CGSizeMake(self.pixelWidth, self.pixelHeight);
@@ -360,6 +362,13 @@ GLint gl_uniforms[GL_UNIFORMS];
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(offscreenRenderWithTexture:size:ts:)])
+            {
+                GLuint outTexture = [self.delegate offscreenRenderWithTexture:CVOpenGLESTextureGetName(_lumaTexture) size:CGSizeMake(self.pixelWidth, self.pixelHeight) ts:_timeValue];
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, outTexture);
+            }
 
             glBindFramebuffer(GL_FRAMEBUFFER, _frameBufferHandle);
             
@@ -377,12 +386,22 @@ GLint gl_uniforms[GL_UNIFORMS];
         glUniform1f(gl_uniforms[GL_ANGLE_Y], (_verticalRotationAngle * M_PI) / 180.0);
         glUniform2f(gl_uniforms[GL_OFFSET], _offsetPoint.x, _offsetPoint.y);
         glUniform1f(gl_uniforms[GL_INDENSITY], _indensity);
+        if (CMTimeCompare(kCMTimeZero, _timeValue) != 0)
+        {
+            glUniform1f(gl_uniforms[GL_TIME], (float)_timeValue.value / _timeValue.timescale * 10.0);
+        }
         
         glUniform1f(gl_uniforms[GL_RATIO], _layerBounds.size.width / _layerBounds.size.height);
         glUniform2f(gl_uniforms[GL_SIZE], self.pixelWidth, self.pixelHeight);
         
         [self drawTexture];
     });
+}
+
+- (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer timestamp:(CMTime)ts
+{
+    _timeValue = ts;
+    [self displayPixelBuffer:pixelBuffer];
 }
 
 

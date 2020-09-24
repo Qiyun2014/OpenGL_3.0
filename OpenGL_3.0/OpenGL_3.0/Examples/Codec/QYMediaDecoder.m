@@ -46,8 +46,10 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 - (void)dealloc
 {
+    _transcode = nil;
     [self cleanup];
 }
+
 
 - (void)cleanup
 {
@@ -78,8 +80,8 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
         [_player pause];
         _player = nil;
     }
-    _transcode = nil;
 }
+
 
 #pragma mark    -   get method
 
@@ -100,7 +102,10 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
             NSLog(@"AssetReader create failed, error is %@", error);
             return nil;
         }
-        [self addObserver:self forKeyPath:kObserverReaderOutputStatus options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:NULL];
+        [self addObserver:self
+               forKeyPath:kObserverReaderOutputStatus
+                  options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                  context:NULL];
         [self addAssetTracksToReader:_reader sourceAsset:self.asset];
     }
     return _reader;
@@ -122,9 +127,12 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 - (AVPlayerItemVideoOutput *)videoOutput {
     if (!_videoOutput) {
         NSDictionary *pixBuffAttributes = @{(id)kCVPixelBufferPixelFormatTypeKey: @(kCVPixelFormatType_32BGRA),
+#if (TARGET_IPHONE_SIMULATOR == 1 && TARGET_OS_IPHONE == 1)
+#else
                                             (id)kCVPixelBufferOpenGLESTextureCacheCompatibilityKey : @(true),
                                             (id)kCVPixelBufferIOSurfacePropertiesKey: @{},
                                             (id)kCVPixelBufferOpenGLCompatibilityKey : @(true),
+#endif
 #if TARGET_OS_MAC
 //                                            (id)kCVPixelBufferMetalCompatibilityKey : @(true),
 #endif
@@ -169,14 +177,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 - (void)updateURL:(NSURL *)URL
 {
     dispatch_sync([QYGLContext shareImageContext].contextQueue, ^{
-        if (_asset) {
-            [_asset cancelLoading];
-            _asset = nil;
-        }
-        if (_reader) {
-            [_reader cancelReading];
-            _reader = nil;
-        }
+        [self cleanup];
         [self assetWithURL:URL];
     });
 }
@@ -201,7 +202,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
                     {
                         [self.delegate mediaDecoder:self mediaType:obj.mediaType didOutputSampleBufferRef:sampleBuffer];
                     }
-                    NSLog(@"SampleBuffer decode with type = %@", obj.mediaType);
+                    // NSLog(@"SampleBuffer decode with type = %@", obj.mediaType);
                     CMSampleBufferInvalidate(sampleBuffer);
                     CFRelease(sampleBuffer);
                 }
@@ -229,14 +230,15 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     CFTimeInterval nextVSync = ([displayLink timestamp] + [displayLink duration]);
     outputItemTime = [[self videoOutput] itemTimeForHostTime:nextVSync];
     
-    if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime]) {
+    if ([[self videoOutput] hasNewPixelBufferForItemTime:outputItemTime])
+    {
         CVPixelBufferRef pixelBuffer = NULL;
         pixelBuffer = [[self videoOutput] copyPixelBufferForItemTime:outputItemTime itemTimeForDisplay:NULL];
         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaDecoder:timestamp:didOutputPixelBufferRef:)])
         {
             [self.delegate mediaDecoder:self timestamp:outputItemTime didOutputPixelBufferRef:pixelBuffer];
         }
-        NSLog(@"PixelBuffer decode with ts = %lf", nextVSync);
+        // NSLog(@"PixelBuffer decode with ts = %lf", nextVSync);
         if (pixelBuffer != NULL) {
             CFRelease(pixelBuffer);
         }
@@ -363,7 +365,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
                 
             case AVAssetReaderStatusCompleted:
                 NSLog(@"decode video of status is completed ...");
-                [self removeObserver:self forKeyPath:@"reader.status"];
+                [self removeObserver:self forKeyPath:kObserverReaderOutputStatus];
                 break;
                 
             case AVAssetReaderStatusFailed:

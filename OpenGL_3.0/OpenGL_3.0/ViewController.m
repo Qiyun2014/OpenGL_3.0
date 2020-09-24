@@ -48,6 +48,9 @@
              @"QYImageTransitionTypeViewController",
              @"QYPlayerViewController",
              @"QYPlayerRenderManagerViewController",
+             @"QYPlayerRecordViewController",
+             @"QYPlayerFilterViewController",
+             @"QYPixelBufferWriterViewController",
     ];
 }
 
@@ -56,8 +59,11 @@
     return @[@"GLKit-单张图片",
              @"GLKit-图片转场",
              @"GLKit-图片多个转场切换",
-             @"视频解码播放",
-             @"视频解码播放-显示控制"
+             @"视频解码 + 播放",
+             @"视频解码 + 播放 + 显示控制",
+             @"视频播放 + 录制",
+             @"视频播放 + 滤镜",
+             @"视频播放 + 滤镜 + 录制",
     ];
 }
 

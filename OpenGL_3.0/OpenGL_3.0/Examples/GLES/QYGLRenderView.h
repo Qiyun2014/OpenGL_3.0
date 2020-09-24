@@ -7,37 +7,52 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <CoreMedia/CoreMedia.h>
 NS_ASSUME_NONNULL_BEGIN
 
-@interface QYGLRenderView : UIView
+@protocol
+QYGLTextureDelegate <NSObject>
 
+// 自定义纹理处理，用于离屏渲染或多纹理绘制(支持后台处理)
+- (unsigned int)offscreenRenderWithTexture:(unsigned int)texture size:(CGSize)size ts:(CMTime)ts;
 
-// Presentation
+@end
+
+@interface
+QYGLRenderView : UIView
+
+// 自定义纹理代理
+@property (nonatomic, weak) id <QYGLTextureDelegate> delegate;
+
+// 绘制画板范围
 @property CGSize presentationRect;
 
 
-// rotation angle (0 ~ 360)
+// 水平旋转角度
 @property (nonatomic, assign) float rotationAngle;
-// vertical rotation angle (0 ~ 360)
+
+// 垂直旋转角度
 @property (nonatomic, assign) float verticalRotationAngle;
-// zoom vale, default value is 1.0
+
+// 缩放系数（0 ~ 1， 1 ~ +∞），默认是1.0
 @property (nonatomic, assign) float zoom;
-// draw position offset
+
+// 移动距离，默认是0，适用范围（-2 ~ 2）
 @property (nonatomic, assign) CGPoint offsetPoint;
-// some effect of indensity, such as zoom blur, anging from 0.0 on up, with a default of 0.0
+
+// 一些相关效果的强度，如模糊效果，透明度，滤镜混合比例，美颜强度等
 @property (nonatomic, assign) float  indensity;
 
-// Display object for UIImage
+// 绘制图片，用于图片生成视频
 @property (nonatomic, strong) UIImage   *displayImage;
 
 
-// Display texture
+// 绘制纹理
 - (void)displayTexture:(unsigned int)texture size:(CGSize)size;
 
-// Display pixelbuffer
+// 绘制图片像素缓存对象，支持时间戳
 - (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer;
-
+- (void)displayPixelBuffer:(CVPixelBufferRef)pixelBuffer timestamp:(CMTime)ts;
 
 @end
 
