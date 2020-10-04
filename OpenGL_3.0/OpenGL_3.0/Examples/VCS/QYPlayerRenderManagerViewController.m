@@ -19,6 +19,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+    [self addChildElements];
+}
+
+- (void)addChildElements
+{
     [[self labelTitles] enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
         UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(80, CGRectGetHeight(self.view.bounds) - 60 - 45 * idx, CGRectGetWidth(self.view.bounds) - 100, 20)];

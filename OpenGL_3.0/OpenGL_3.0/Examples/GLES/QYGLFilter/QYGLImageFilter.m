@@ -27,6 +27,7 @@
     return self;
 }
 
+
 - (void)cleanupMemory
 {
     [super cleanupMemory];
@@ -36,6 +37,7 @@
         _inputImageTextureId = 0;
     }
 }
+
 
 - (void)useProgramAndSetUniforms
 {

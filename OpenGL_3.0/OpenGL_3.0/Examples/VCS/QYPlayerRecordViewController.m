@@ -23,7 +23,7 @@
     // Do any additional setup after loading the view.
     
     
-    self.mEncoder = [[QYMediaEncoder alloc] initWithOutputURL:[NSURL fileURLWithPath:[self createTempFileWithFormat:@"mp4"]] resolution:CGSizeMake(960, 540)];
+    self.mEncoder = [[QYMediaEncoder alloc] initWithOutputURL:[NSURL fileURLWithPath:[self createTempFileWithFormat:@"mp4"]] resolution:CGSizeMake(960, 540) encoderType:QYEncoderTypeRecording];
 //    [self.mediaDecoder startAsyncDecoder];
 }
 

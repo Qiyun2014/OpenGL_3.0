@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface QYPlayerRenderManagerViewController : QYPlayerViewController
 
+
+- (void)addChildElements;
+
 @end
 
 NS_ASSUME_NONNULL_END

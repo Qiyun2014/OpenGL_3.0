@@ -14,14 +14,18 @@ NSString *kObserverReaderOutputStatus = @"reader.status";
 static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 
 
-@interface QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
+@interface
+QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
 
 @property (strong, nonatomic) AVPlayer      *player;
 @property (strong, nonatomic) AVURLAsset    *asset;
+
+// AVAssetReader provides services for obtaining media data from an asset.
 @property (strong, nonatomic, nullable) AVAssetReader *reader;
 
 // Class representing a timer bound to the display vsync.
 @property (strong, nonatomic) CADisplayLink *displayLink;
+
 // A concrete subclass of AVPlayerItemOutput that vends video images as CVPixelBuffers.
 @property (strong, nonatomic) AVPlayerItemVideoOutput *videoOutput;
 
@@ -30,7 +34,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
 @implementation QYMediaDecoder
 {
     id _notificationToken;
-    dispatch_semaphore_t _transcode;
+    dispatch_semaphore_t _transcode, _lock_semaphore;
 }
 
 - (id)initWithURL:(NSURL *)URL
@@ -38,6 +42,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     if (self = [super init])
     {
         _transcode = dispatch_semaphore_create(0);
+        _lock_semaphore = dispatch_semaphore_create(1);
         [self assetWithURL:URL];
     }
     return self;
@@ -92,6 +97,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
     }
     return _player;;
 }
+
 
 - (AVAssetReader *)reader
 {
@@ -198,25 +204,27 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
             {
                 const CMSampleBufferRef sampleBuffer = [obj copyNextSampleBuffer];
                 if (sampleBuffer) {
+                    dispatch_semaphore_wait(strong_weak_self->_lock_semaphore, DISPATCH_TIME_FOREVER);
                     if (self.delegate && [self.delegate respondsToSelector:@selector(mediaDecoder:mediaType:didOutputSampleBufferRef:)])
                     {
                         [self.delegate mediaDecoder:self mediaType:obj.mediaType didOutputSampleBufferRef:sampleBuffer];
                     }
-                    // NSLog(@"SampleBuffer decode with type = %@", obj.mediaType);
+                    dispatch_semaphore_signal(strong_weak_self->_lock_semaphore);
                     CMSampleBufferInvalidate(sampleBuffer);
                     CFRelease(sampleBuffer);
                 }
-
                 if (idx + 1 == strong_weak_self.reader.outputs.count) {
                     dispatch_semaphore_signal(strong_weak_self->_transcode);
                 }
             }];
             dispatch_semaphore_wait(strong_weak_self->_transcode, DISPATCH_TIME_FOREVER);
         }
+        
+        dispatch_semaphore_wait(strong_weak_self->_lock_semaphore, DISPATCH_TIME_FOREVER);
         if ([self.delegate respondsToSelector:@selector(didDecoderFinished)]) {
             [self.delegate didDecoderFinished];
         }
-        NSLog(@"decode finish or occur failed ...");
+        dispatch_semaphore_signal(strong_weak_self->_lock_semaphore);
     });
 }
 
@@ -340,7 +348,7 @@ static void *AVPlayerItemStatusContext = &AVPlayerItemStatusContext;
                  AVLinearPCMIsBigEndianKey            : @NO,
                  AVLinearPCMIsFloatKey                : @YES,
                  AVLinearPCMBitDepthKey               : @(32),
-      };
+        };
     }
     else if ([mediaType isEqualToString:AVMediaTypeVideo])
     {

@@ -18,7 +18,13 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 
 @interface QYMediaEncoder ()
 
+// Export media of type
+@property (nonatomic, assign) QYEncoderType encoderType;
+
+// Export new media of url
 @property (nonatomic, copy) NSURL   *ouputUrl;
+
+// For Video pixle resolution
 @property (nonatomic, assign) CGSize    resolution;
 
 // AVAssetWriter provides services for writing media data to a new file,
@@ -30,12 +36,16 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 @end
 
 @implementation QYMediaEncoder
+{
+    BOOL    _isStarting;
+}
 
 
-- (id)initWithOutputURL:(NSURL *)outputUrl resolution:(CGSize)resolution
+- (id)initWithOutputURL:(NSURL *)outputUrl resolution:(CGSize)resolution encoderType:(QYEncoderType)type
 {
     if (self = [super init])
     {
+        self.encoderType = type;
         self.ouputUrl = outputUrl;
         self.resolution = resolution;
         NSAssert(self.mWriter.status != AVAssetWriterStatusWriting, @"AssetWrite status counld not is writing ...");
@@ -59,12 +69,13 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 {
     if (self.mWriter.status != AVAssetWriterStatusWriting || self.mWriter.status != AVAssetWriterStatusCompleted)
     {
-        dispatch_sync([QYGLContext shareImageContext].contextQueue, ^
+        if ([self.mWriter.inputs.firstObject.mediaType isEqualToString:AVMediaTypeVideo])
         {
             NSAssert(self.mPixelBufferAdaptor != nil, @"Input pixelBuffer adaptor create failed ...");
-            [self.mWriter startWriting];
-            [self.mWriter startSessionAtSourceTime:kCMTimeZero];
-        });
+        }
+        [self.mWriter startWriting];
+        [self.mWriter startSessionAtSourceTime:kCMTimeZero];
+        _isStarting = true;
     }
     else
     {
@@ -93,15 +104,16 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
     if (_mWriter == nil || _mWriter.status == AVAssetWriterStatusUnknown) {
         return;
     }
-    dispatch_sync([QYGLContext shareImageContext].contextQueue, ^
+    if (self.mWriter.status == AVAssetWriterStatusWriting)
     {
-        if (self.mWriter.status == AVAssetWriterStatusWriting)
-        {
-            [self.mWriter.inputs enumerateObjectsUsingBlock:^(AVAssetWriterInput * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                [obj markAsFinished];
-                obj = nil;
-            }];
-            [self.mWriter finishWritingWithCompletionHandler:^{
+        [self.mWriter.inputs enumerateObjectsUsingBlock:^(AVAssetWriterInput * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [obj markAsFinished];
+            obj = nil;
+        }];
+        [self.mWriter finishWritingWithCompletionHandler:^{
+            if (self.mWriter.status != AVAssetWriterStatusFailed && self.mWriter.status == AVAssetWriterStatusCompleted)
+            {
+                NSLog(@"Video writing succeeded.");
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
                  ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
@@ -110,9 +122,16 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
                      NSLog(@"%@ 保存到相册....  %@ ", error ? @"失败" : @"成功", self.ouputUrl);
                  }];
 #pragma clang diagnostic pop
-            }];
+            } else
+            {
+                [self.mWriter cancelWriting];
+                NSLog(@"Video writing failed: %@", self.mWriter.error);
+            }
+        }];
+        if (_mPixelBufferAdaptor) {
+            CVPixelBufferPoolRelease(_mPixelBufferAdaptor.pixelBufferPool);
         }
-    });
+    }
 }
 
 
@@ -120,49 +139,115 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 {
     AVAssetWriterInput *writerInput = self.mWriter.inputs.firstObject;
     if ((!CMTIME_IS_VALID(ts) || pixelBuffer == nil) || writerInput == nil) {
+        NSLog(@"PixelBuffer of invalid pts ...");
         return;
     }
     
-    if (self.mWriter.status != AVAssetWriterStatusWriting) {
+    if (self.mWriter.status != AVAssetWriterStatusWriting && !_isStarting) {
         [self startAsyncEncoder];
-        return;
+        NSLog(@"Start writing ...");
     }
-    
-    dispatch_async([QYGLContext shareImageContext].contextQueue, ^{
-        if (!writerInput.readyForMoreMediaData) {
+        
+    void (^writer) (void) = ^()
+    {
+        if (!writerInput.readyForMoreMediaData)
+        {
             NSLog(@"Had to drop an video frame: %@,  error is %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, ts)), self.mWriter.error);
             return;
         }
         else if (self.mWriter.status == AVAssetWriterStatusWriting)
         {
-            CVPixelBufferLockBaseAddress(pixelBuffer, 0);
             if (![self.mPixelBufferAdaptor appendPixelBuffer:pixelBuffer withPresentationTime:ts])
             {
                 NSLog(@"Problem appending video buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, ts)));
             } else{
                 NSLog(@"Writing video pixel buffer ...  %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, ts)));
             }
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        } else
+        {
+            NSLog(@"Write status not is writing ...");
         }
-    });
+    };
+    
+    if (self.encoderType != QYEncoderTypeExporting)
+    {
+        while (!writerInput.readyForMoreMediaData) {
+            NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
+            [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
+        }
+        writer();
+    } else
+    {
+        writer();
+    }
 }
 
+
+// https://www.osstatus.com/search/results?platform=all&framework=all&search=
+- (void)inputAudioSampleBuffer:(CMSampleBufferRef)sampleBuffer timestamp:(CMTime)ts
+{
+    if ((CMTIME_IS_INVALID(ts) || self.mWriter.error) && CMSampleBufferIsValid(sampleBuffer)) {
+        return;
+    }
+    
+    if (self.mWriter.status != AVAssetWriterStatusWriting && !_isStarting) {
+        [self startAsyncEncoder];
+        NSLog(@"1: Start writing ...");
+        return;
+    }
+    
+    void (^audioWriter) (AVAssetWriterInput *writerInput) = ^(AVAssetWriterInput *writerInput)
+    {
+        if (!writerInput.readyForMoreMediaData)
+        {
+            NSLog(@"2: Had to drop an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, ts)));
+            return;
+        }
+        
+        if (self.mWriter.status == AVAssetWriterStatusWriting)
+        {
+            if (![writerInput appendSampleBuffer:sampleBuffer])
+            {
+                NSLog(@"3: Problem appending audio buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, ts)));
+            } else {
+                NSLog(@"Writing audio buffer ...  %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, ts)));
+            }
+        } else {
+            NSLog(@"Asset writing audio status error, %ld, error = %@", (long)self.mWriter.status, self.mWriter.error);
+        }
+    };
+    
+    AVAssetWriterInput *input = self.mWriter.inputs.lastObject;
+    if (self.encoderType != QYEncoderTypeExporting)
+    {
+        while (!input.readyForMoreMediaData) {
+            NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
+            [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
+        }
+        audioWriter(input);
+    } else
+    {
+        audioWriter(input);
+    }
+}
 
 
 - (void)inputSampleBuffer:(CMSampleBufferRef)sampleBuffer mediaType:(AVMediaType)mediaType
 {
-    if (self.mWriter.status != AVAssetWriterStatusWriting || self.mWriter.status != AVAssetWriterStatusCompleted)
+    CMTime  pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    if ([mediaType isEqualToString:AVMediaTypeVideo])
     {
-        [self.mWriter startWriting];
-        [self.mWriter startSessionAtSourceTime:kCMTimeZero];
-        return;
+        CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+        if (pixelBuffer == nil) {
+            return;
+        }
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+        [self inputPixelBuffer:pixelBuffer timestamp:pts];
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
     }
-    
-    AVAssetWriterInput *writerInput = (mediaType == AVMediaTypeVideo) ? self.mWriter.inputs.firstObject : self.mWriter.inputs.lastObject;
-    
-    if ([writerInput isReadyForMoreMediaData])
+    else
     {
-        [writerInput appendSampleBuffer:sampleBuffer];
+        [self inputAudioSampleBuffer:sampleBuffer timestamp:pts];
     }
 }
 
@@ -217,11 +302,11 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
                 
             case AVAssetWriterStatusCompleted:
                 NSLog(@"Encoder video of status is completed ...");
-                [self removeObserver:self forKeyPath:kObserverWriterOutputStatus];
+                //[self removeObserver:self forKeyPath:kObserverWriterOutputStatus];
                 break;
                 
             case AVAssetWriterStatusFailed:
-                NSLog(@"Encoder video of status is failed ...");
+                NSLog(@"Encoder video of status is failed ... %@", self.mWriter.error);
                 break;
                 
             case AVAssetWriterStatusCancelled:
@@ -246,9 +331,10 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
         AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:obj outputSettings:[self outputSettingForMediaType:obj]];
         if ([writer canAddInput:writerInput])
         {
-            writerInput.expectsMediaDataInRealTime = YES;
+            writerInput.performsMultiPassEncodingIfSupported = YES;
             [writer addInput:writerInput];
         }
+        writerInput.expectsMediaDataInRealTime = (self.encoderType == QYEncoderTypeRecording) ? YES : NO;
     }];
 }
 
@@ -263,7 +349,7 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
                  AVVideoWidthKey                    : @(self.resolution.width),
                  AVVideoHeightKey                   : @(self.resolution.height),
                  AVVideoScalingModeKey              : AVVideoScalingModeResizeAspectFill,
-                 AVVideoCompressionPropertiesKey    : @{AVVideoAverageBitRateKey : @(self.resolution.width * self.resolution.height * 1.5)},
+                 AVVideoCompressionPropertiesKey    : @{AVVideoAverageBitRateKey : @(self.resolution.width * self.resolution.height * 4)},
 //                 AVVideoAllowFrameReorderingKey     : @true,
 //                 AVVideoExpectedSourceFrameRateKey  : @(30)
         };
@@ -271,15 +357,28 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
     else if ([mediaType isEqualToString:AVMediaTypeAudio])
     {
         // AVAudioSettings.h、CoreAudioBaseTypes.h
-        return @{AVFormatIDKey                      : @(kAudioFormatMPEG4AAC),
-                 AVSampleRateKey                    : @(44100),
-                 AVNumberOfChannelsKey              : @(2),
-                 AVEncoderAudioQualityKey           : @(AVAudioQualityHigh),
-//                 AVEncoderBitRateKey                : @(128 * 1000),
-//                 AVEncoderBitRatePerChannelKey      : @(2)
-        };
+        return (self.encoderType == QYEncoderTypeRecording) ? [self audioCompressionOutputSetting] : [self audioCompressionOutputSetting];
     }
     return nil;
+}
+
+
+
+- (NSDictionary *)audioCompressionOutputSetting
+{
+    AudioChannelLayout stereoChannelLayout = {
+        .mChannelLayoutTag = kAudioChannelLayoutTag_Stereo,
+        .mChannelBitmap = 0,
+        .mNumberChannelDescriptions = 0
+    };
+    NSData *channelLayoutAsData = [NSData dataWithBytes:&stereoChannelLayout length:offsetof(AudioChannelLayout, mChannelDescriptions)];
+    return @{AVFormatIDKey                      : @(kAudioFormatMPEG4AAC),
+             AVNumberOfChannelsKey              : @(2),
+             AVSampleRateKey                    : @(44100),
+             AVChannelLayoutKey                 : channelLayoutAsData,
+             AVEncoderBitRateKey                : @(128000),
+             AVEncoderAudioQualityKey           : @(AVAudioQualityHigh),
+    };
 }
 
 
@@ -292,5 +391,6 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
              (NSString *)kCVPixelBufferHeightKey                            : @(self.resolution.height),
     };
 }
+
 
 @end

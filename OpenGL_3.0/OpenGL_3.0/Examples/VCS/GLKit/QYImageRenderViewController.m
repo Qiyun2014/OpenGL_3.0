@@ -149,6 +149,7 @@
         case 6:
         {
             [self setIndensity:slider.value];
+            NSLog(@"indensity = %.2f", slider.value);
         }
             break;
             

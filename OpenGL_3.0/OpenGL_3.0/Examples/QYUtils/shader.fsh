@@ -60,7 +60,7 @@ vec4 cornerBolder(vec4 textureColor, float corner)
 vec4 blur13(sampler2D image, vec2 uv, vec2 resolution, vec2 direction)
 {
     vec4 sum = vec4(0.0);
-    vec2 size = indensity / resolution;
+    vec2 size = vec2(0.0, indensity) / resolution;
         
     sum += texture2D(image, vec2(uv + 1.0 * size * direction)) * 0.125794;
     sum += texture2D(image, vec2(uv + 2.0 * size * direction)) * 0.106483;

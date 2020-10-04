@@ -153,6 +153,7 @@ GLint uniforms[NUM_UNIFORMS];
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     [self redrawTexture];
+    NSLog(@"zoom = %.2f, angle_x = %.2f, angle_y = %.2f, offset = %@", _zoom, _rotationAngle, _verticalRotationAngle, NSStringFromCGPoint(_offsetPoint));
 }
 
 

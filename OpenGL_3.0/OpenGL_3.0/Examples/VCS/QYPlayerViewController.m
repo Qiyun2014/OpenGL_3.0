@@ -56,7 +56,7 @@
 - (QYMediaDecoder *)mediaDecoder
 {
     if (!_mediaDecoder) {
-        NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"JJTM2837" ofType:@"mov"]];
+        NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"XFXM8486" ofType:@"mp4"]];
         _mediaDecoder = [[QYMediaDecoder alloc] initWithURL:url];
         _mediaDecoder.delegate = self;
     }
@@ -75,7 +75,7 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd-HH-mm-ss"];
     NSString *dateTime = [formatter stringFromDate:[NSDate date]];
-    NSString *fileName = [NSString stringWithFormat:@"%ld-%@.%@", random() % 10^5, dateTime, format];
+    NSString *fileName = [NSString stringWithFormat:@"%@.%@", dateTime, format];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *file = [paths.firstObject stringByAppendingPathComponent:fileName];
     if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {

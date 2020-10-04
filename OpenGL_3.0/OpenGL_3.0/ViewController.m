@@ -51,6 +51,7 @@
              @"QYPlayerRecordViewController",
              @"QYPlayerFilterViewController",
              @"QYPixelBufferWriterViewController",
+             @"QYMediaCodecViewController",
     ];
 }
 
@@ -64,6 +65,7 @@
              @"视频播放 + 录制",
              @"视频播放 + 滤镜",
              @"视频播放 + 滤镜 + 录制",
+             @"音视频 + 编解码",
     ];
 }
 

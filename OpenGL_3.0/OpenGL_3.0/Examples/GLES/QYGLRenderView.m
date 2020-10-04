@@ -65,6 +65,9 @@ GLint gl_uniforms[GL_UNIFORMS];
     CMTime   _timeValue;
     
     GLuint  _imageTextureId;
+    
+    GLuint  _sampleFramebuffer, _sampleColorRenderBuffer;
+    GLuint  _sampleDepthRenderBuffer;
 }
 
 
@@ -96,6 +99,18 @@ GLint gl_uniforms[GL_UNIFORMS];
 
 - (void)dealloc
 {
+    if (_sampleFramebuffer > 0) {
+        glDeleteFramebuffers(1, &_sampleFramebuffer);
+        _sampleFramebuffer = 0;
+    }
+    if (_sampleColorRenderBuffer > 0) {
+        glDeleteRenderbuffers(1, &_sampleColorRenderBuffer);
+        _sampleColorRenderBuffer = 0;
+    }
+    if (_sampleDepthRenderBuffer > 0) {
+        glDeleteRenderbuffers(1, &_sampleDepthRenderBuffer);
+        _sampleDepthRenderBuffer = 0;
+    }
     if (_colorBufferHandle) {
         glDeleteRenderbuffers(1, &_colorBufferHandle);
         _colorBufferHandle = 0;
@@ -191,6 +206,20 @@ GLint gl_uniforms[GL_UNIFORMS];
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _colorBufferHandle);
+    
+    glGenFramebuffers(1, &_sampleFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
+
+    glGenRenderbuffers(1, &_sampleColorRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _sampleColorRenderBuffer);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, _backingWidth, _backingHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _sampleColorRenderBuffer);
+    
+    glGenRenderbuffers(1, &_sampleDepthRenderBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _sampleDepthRenderBuffer);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT16, _backingWidth, _backingHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _sampleDepthRenderBuffer);
+
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
     }
@@ -290,7 +319,7 @@ GLint gl_uniforms[GL_UNIFORMS];
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
             
-            glBindFramebuffer(GL_FRAMEBUFFER, _frameBufferHandle);
+            glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
             
             // Set the view port to the entire view.
             glViewport(0, 0, _backingWidth, _backingHeight);
@@ -370,7 +399,7 @@ GLint gl_uniforms[GL_UNIFORMS];
                 glBindTexture(GL_TEXTURE_2D, outTexture);
             }
 
-            glBindFramebuffer(GL_FRAMEBUFFER, _frameBufferHandle);
+            glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
             
             // Set the view port to the entire view.
             glViewport(0, 0, _backingWidth, _backingHeight);
@@ -453,6 +482,17 @@ GLint gl_uniforms[GL_UNIFORMS];
     glEnableVertexAttribArray(ATTRIB_TEXCOORD);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _frameBufferHandle);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, _sampleFramebuffer);
+    
+    // Discard the depth buffer from the read fbo. It is no more necessary.
+    glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_DEPTH_ATTACHMENT});
+    // Copy the read fbo(multisampled framebuffer) to the draw fbo(single-sampled framebuffer)
+    glBlitFramebuffer(0, 0, _backingWidth, _backingHeight, 0, 0, _backingWidth, _backingHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_COLOR_ATTACHMENT0});
+    
 
     glBindRenderbuffer(GL_RENDERBUFFER, _colorBufferHandle);
     [[QYGLContext shareImageContext].context presentRenderbuffer:GL_RENDERBUFFER];

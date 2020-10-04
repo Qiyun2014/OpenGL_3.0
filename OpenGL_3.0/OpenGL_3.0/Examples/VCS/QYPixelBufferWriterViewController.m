@@ -28,7 +28,7 @@
     self.outputPixelBuffer.pixelBufferDelegate = self;
     [self.renderTexture addTarget:self.outputPixelBuffer];
     
-    self.mEncoder = [[QYMediaEncoder alloc] initWithOutputURL:[NSURL fileURLWithPath:[self createTempFileWithFormat:@"mp4"]] resolution:CGSizeMake(960, 540)];
+    self.mEncoder = [[QYMediaEncoder alloc] initWithOutputURL:[NSURL fileURLWithPath:[self createTempFileWithFormat:@"mp4"]] resolution:CGSizeMake(960, 540) encoderType:QYEncoderTypeRecording];
 
 }
 

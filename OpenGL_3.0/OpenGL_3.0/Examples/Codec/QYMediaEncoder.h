@@ -12,9 +12,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, QYEncoderType)
+{
+    QYEncoderTypeRecording,
+    QYEncoderTypeExporting,
+};
+
 @interface QYMediaEncoder : NSObject
 
-- (id)initWithOutputURL:(NSURL *)outputUrl resolution:(CGSize)resolution;
+// 初始化，默认是录制模式
+- (id)initWithOutputURL:(NSURL *)outputUrl resolution:(CGSize)resolution encoderType:(QYEncoderType)type;
 
 
 // 编码输入的图像数据，带入相对时间戳

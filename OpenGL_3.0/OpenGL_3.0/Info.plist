@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>请求保存视频到相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>请求访问相册，存储视频</string>
 	<key>CFBundleDevelopmentRegion</key>

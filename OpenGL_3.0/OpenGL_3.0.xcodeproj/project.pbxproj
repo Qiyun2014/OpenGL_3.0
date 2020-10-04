@@ -23,6 +23,8 @@
 		AB546400251C822800A07163 /* QYGLOutputPixelBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463FF251C822800A07163 /* QYGLOutputPixelBuffer.m */; };
 		AB546406251C913300A07163 /* QYPixelBufferWriterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */; };
 		AB549D0F25188258003A7B30 /* QYGLRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB549D0E25188258003A7B30 /* QYGLRenderView.m */; };
+		AB5650C12521784300C022ED /* QYMediaCodecViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5650C02521784300C022ED /* QYMediaCodecViewController.m */; };
+		AB594C262524869800A90C47 /* XFXM8486.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AB594C252524869800A90C47 /* XFXM8486.mp4 */; };
 		AB5992E825144BCA00247AE4 /* QYImageTransitionTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5992E725144BCA00247AE4 /* QYImageTransitionTypeViewController.m */; };
 		AB5992EA25149B7F00247AE4 /* theme.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB5992E925149B7F00247AE4 /* theme.jpg */; };
 		AB8522E12513402A0021D179 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8522E02513402A0021D179 /* AppDelegate.m */; };
@@ -90,6 +92,9 @@
 		AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPixelBufferWriterViewController.m; sourceTree = "<group>"; };
 		AB549D0D25188258003A7B30 /* QYGLRenderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLRenderView.h; sourceTree = "<group>"; };
 		AB549D0E25188258003A7B30 /* QYGLRenderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLRenderView.m; sourceTree = "<group>"; };
+		AB5650BF2521784200C022ED /* QYMediaCodecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYMediaCodecViewController.h; sourceTree = "<group>"; };
+		AB5650C02521784300C022ED /* QYMediaCodecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYMediaCodecViewController.m; sourceTree = "<group>"; };
+		AB594C252524869800A90C47 /* XFXM8486.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = XFXM8486.mp4; sourceTree = "<group>"; };
 		AB5992E625144BCA00247AE4 /* QYImageTransitionTypeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYImageTransitionTypeViewController.h; sourceTree = "<group>"; };
 		AB5992E725144BCA00247AE4 /* QYImageTransitionTypeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYImageTransitionTypeViewController.m; sourceTree = "<group>"; };
 		AB5992E925149B7F00247AE4 /* theme.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = theme.jpg; sourceTree = "<group>"; };
@@ -167,6 +172,8 @@
 				AB5463D9251C3B6A00A07163 /* QYPlayerFilterViewController.m */,
 				AB546404251C913300A07163 /* QYPixelBufferWriterViewController.h */,
 				AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */,
+				AB5650BF2521784200C022ED /* QYMediaCodecViewController.h */,
+				AB5650C02521784300C022ED /* QYMediaCodecViewController.m */,
 			);
 			path = VCS;
 			sourceTree = "<group>";
@@ -239,6 +246,7 @@
 			children = (
 				AB5463F3251C4DF200A07163 /* LUTSource.bundle */,
 				AB4D0254251992870006DC2B /* JJTM2837.mov */,
+				AB594C252524869800A90C47 /* XFXM8486.mp4 */,
 				AB852314251340BC0021D179 /* Examples */,
 				AB8522DF2513402A0021D179 /* AppDelegate.h */,
 				AB8522E02513402A0021D179 /* AppDelegate.m */,
@@ -414,6 +422,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB852325251346A10021D179 /* shader.fsh in Resources */,
+				AB594C262524869800A90C47 /* XFXM8486.mp4 in Resources */,
 				AB8523232513468F0021D179 /* shader.vsh in Resources */,
 				AB4F69CC251B6AF20053325C /* default.vsh in Resources */,
 				AB4F69D1251B6AFC0053325C /* default.fsh in Resources */,
@@ -469,6 +478,7 @@
 				AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */,
 				AB8522E42513402A0021D179 /* SceneDelegate.m in Sources */,
 				AB4F69C0251B39870053325C /* QYPlayerRecordViewController.m in Sources */,
+				AB5650C12521784300C022ED /* QYMediaCodecViewController.m in Sources */,
 				AB852317251340F20021D179 /* QYImageRenderViewController.m in Sources */,
 				AB5463E0251C3FF700A07163 /* QYGLTextureOutput.m in Sources */,
 			);
