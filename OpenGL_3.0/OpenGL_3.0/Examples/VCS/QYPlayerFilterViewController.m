@@ -37,11 +37,11 @@
 
 - (NSArray *)filters {
     return @[@"LUT-原图", @"LUT-冷酷", @"LUT-城市01", @"LUT-城市02",
-             @"LUT-平衡", @"LUT-鲜艳", @"LUT-高亮", @"LUT-深秋",
-             @"LUT-日落", @"LUT-明亮", @"LUT-樱花", @"LUT-橘色",
-             @"LUT-温暖", @"LUT-相机", @"LUT-绿色", @"LUT-全彩",
+             @"LUT-平衡", @"LUT-鲜艳", @"LUT-高亮",   @"LUT-深秋",
+             @"LUT-日落", @"LUT-明亮", @"LUT-樱花",   @"LUT-橘色",
+             @"LUT-温暖", @"LUT-相机", @"LUT-绿色",   @"LUT-全彩",
              @"LUT-古典", @"LUT-寒冬", @"LUT-恐怖红", @"LUT-恐怖蓝",
-             @"LUT-真实", @"LUT-深蓝", @"LUT-淡蓝", @"LUT-照明"];
+             @"LUT-真实", @"LUT-深蓝", @"LUT-淡蓝",   @"LUT-照明"];
 }
 
 

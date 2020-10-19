@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */; };
-		AB4D0255251992870006DC2B /* JJTM2837.mov in Resources */ = {isa = PBXBuildFile; fileRef = AB4D0254251992870006DC2B /* JJTM2837.mov */; };
 		AB4D026F2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */; };
 		AB4F69B9251B1F400053325C /* QYMediaEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4F69B8251B1F400053325C /* QYMediaEncoder.m */; };
 		AB4F69C0251B39870053325C /* QYPlayerRecordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4F69BF251B39870053325C /* QYPlayerRecordViewController.m */; };
 		AB4F69C7251B6AA90053325C /* QYGLRenderTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4F69C6251B6AA90053325C /* QYGLRenderTexture.m */; };
 		AB4F69CC251B6AF20053325C /* default.vsh in Resources */ = {isa = PBXBuildFile; fileRef = AB4F69CB251B6AF20053325C /* default.vsh */; };
 		AB4F69D1251B6AFC0053325C /* default.fsh in Resources */ = {isa = PBXBuildFile; fileRef = AB4F69D0251B6AFC0053325C /* default.fsh */; };
+		AB4FD5222529E4A0005250B9 /* QYImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4FD5212529E4A0005250B9 /* QYImagePicker.m */; };
 		AB5463DA251C3B6A00A07163 /* QYPlayerFilterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463D9251C3B6A00A07163 /* QYPlayerFilterViewController.m */; };
 		AB5463E0251C3FF700A07163 /* QYGLTextureOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463DF251C3FF700A07163 /* QYGLTextureOutput.m */; };
 		AB5463E7251C48AB00A07163 /* QYGLImageFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463E6251C48AB00A07163 /* QYGLImageFilter.m */; };
@@ -23,10 +23,27 @@
 		AB546400251C822800A07163 /* QYGLOutputPixelBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5463FF251C822800A07163 /* QYGLOutputPixelBuffer.m */; };
 		AB546406251C913300A07163 /* QYPixelBufferWriterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */; };
 		AB549D0F25188258003A7B30 /* QYGLRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB549D0E25188258003A7B30 /* QYGLRenderView.m */; };
+		AB5506132535954900753D86 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB5506122535954900753D86 /* test.jpg */; };
 		AB5650C12521784300C022ED /* QYMediaCodecViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5650C02521784300C022ED /* QYMediaCodecViewController.m */; };
 		AB594C262524869800A90C47 /* XFXM8486.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = AB594C252524869800A90C47 /* XFXM8486.mp4 */; };
 		AB5992E825144BCA00247AE4 /* QYImageTransitionTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB5992E725144BCA00247AE4 /* QYImageTransitionTypeViewController.m */; };
 		AB5992EA25149B7F00247AE4 /* theme.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AB5992E925149B7F00247AE4 /* theme.jpg */; };
+		AB77E33B253D3D0A00ADFE93 /* render.fsh in Resources */ = {isa = PBXBuildFile; fileRef = AB77E33A253D3D0A00ADFE93 /* render.fsh */; };
+		AB77E340253D3D5000ADFE93 /* render.vsh in Resources */ = {isa = PBXBuildFile; fileRef = AB77E33F253D3D5000ADFE93 /* render.vsh */; };
+		AB77E350253D725E00ADFE93 /* tnn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB77E34F253D725E00ADFE93 /* tnn.framework */; };
+		AB77E368253D88E300ADFE93 /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB77E367253D88E300ADFE93 /* CoreML.framework */; };
+		AB77E36D253D88FD00ADFE93 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB77E36C253D88FD00ADFE93 /* Accelerate.framework */; };
+		AB77E395253D933D00ADFE93 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB77E373253D8A7200ADFE93 /* CoreMedia.framework */; };
+		AB77E3A1253D965600ADFE93 /* tnn_sdk_sample.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB77E39E253D965600ADFE93 /* tnn_sdk_sample.cc */; };
+		AB77E3A7253D979F00ADFE93 /* QYTNNFaceAlignerModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3A6253D979F00ADFE93 /* QYTNNFaceAlignerModel.mm */; };
+		AB77E3AD253D97DA00ADFE93 /* tnn_fps_counter.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3AB253D97DA00ADFE93 /* tnn_fps_counter.cc */; };
+		AB77E3B6253D990400ADFE93 /* face_detect_aligner.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3B4253D990300ADFE93 /* face_detect_aligner.cc */; };
+		AB77E3BC253D995B00ADFE93 /* blazeface_detector.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3BB253D995B00ADFE93 /* blazeface_detector.cc */; };
+		AB77E3C5253D9A6600ADFE93 /* youtu_face_align.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3C3253D9A6600ADFE93 /* youtu_face_align.cc */; };
+		AB77E3CB253D9AF800ADFE93 /* QYTNNPlayerViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3CA253D9AF800ADFE93 /* QYTNNPlayerViewController.mm */; };
+		AB77E3D7253D9CE400ADFE93 /* TNNBoundingBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3D6253D9CE400ADFE93 /* TNNBoundingBox.mm */; };
+		AB77E3DD253D9F9800ADFE93 /* UIImage+Utility.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB77E3DC253D9F9800ADFE93 /* UIImage+Utility.mm */; };
+		AB77E3E2253DA06200ADFE93 /* model in Resources */ = {isa = PBXBuildFile; fileRef = AB77E3E1253DA06200ADFE93 /* model */; };
 		AB8522E12513402A0021D179 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8522E02513402A0021D179 /* AppDelegate.m */; };
 		AB8522E42513402A0021D179 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8522E32513402A0021D179 /* SceneDelegate.m */; };
 		AB8522E72513402A0021D179 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB8522E62513402A0021D179 /* ViewController.m */; };
@@ -67,7 +84,6 @@
 /* Begin PBXFileReference section */
 		AB4D024B2519921B0006DC2B /* QYPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerViewController.h; sourceTree = "<group>"; };
 		AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerViewController.m; sourceTree = "<group>"; };
-		AB4D0254251992870006DC2B /* JJTM2837.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = JJTM2837.mov; sourceTree = "<group>"; };
 		AB4D026D2519E9F50006DC2B /* QYPlayerRenderManagerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerRenderManagerViewController.h; sourceTree = "<group>"; };
 		AB4D026E2519E9F50006DC2B /* QYPlayerRenderManagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerRenderManagerViewController.m; sourceTree = "<group>"; };
 		AB4F69B7251B1F400053325C /* QYMediaEncoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYMediaEncoder.h; sourceTree = "<group>"; };
@@ -78,6 +94,8 @@
 		AB4F69C6251B6AA90053325C /* QYGLRenderTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLRenderTexture.m; sourceTree = "<group>"; };
 		AB4F69CB251B6AF20053325C /* default.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = default.vsh; sourceTree = "<group>"; };
 		AB4F69D0251B6AFC0053325C /* default.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = default.fsh; sourceTree = "<group>"; };
+		AB4FD5202529E4A0005250B9 /* QYImagePicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYImagePicker.h; sourceTree = "<group>"; };
+		AB4FD5212529E4A0005250B9 /* QYImagePicker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYImagePicker.m; sourceTree = "<group>"; };
 		AB5463D8251C3B6A00A07163 /* QYPlayerFilterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYPlayerFilterViewController.h; sourceTree = "<group>"; };
 		AB5463D9251C3B6A00A07163 /* QYPlayerFilterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPlayerFilterViewController.m; sourceTree = "<group>"; };
 		AB5463DE251C3FF700A07163 /* QYGLTextureOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLTextureOutput.h; sourceTree = "<group>"; };
@@ -92,12 +110,40 @@
 		AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYPixelBufferWriterViewController.m; sourceTree = "<group>"; };
 		AB549D0D25188258003A7B30 /* QYGLRenderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYGLRenderView.h; sourceTree = "<group>"; };
 		AB549D0E25188258003A7B30 /* QYGLRenderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYGLRenderView.m; sourceTree = "<group>"; };
+		AB5506122535954900753D86 /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		AB5650BF2521784200C022ED /* QYMediaCodecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYMediaCodecViewController.h; sourceTree = "<group>"; };
 		AB5650C02521784300C022ED /* QYMediaCodecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYMediaCodecViewController.m; sourceTree = "<group>"; };
 		AB594C252524869800A90C47 /* XFXM8486.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = XFXM8486.mp4; sourceTree = "<group>"; };
 		AB5992E625144BCA00247AE4 /* QYImageTransitionTypeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYImageTransitionTypeViewController.h; sourceTree = "<group>"; };
 		AB5992E725144BCA00247AE4 /* QYImageTransitionTypeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QYImageTransitionTypeViewController.m; sourceTree = "<group>"; };
 		AB5992E925149B7F00247AE4 /* theme.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = theme.jpg; sourceTree = "<group>"; };
+		AB77E33A253D3D0A00ADFE93 /* render.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = render.fsh; sourceTree = "<group>"; };
+		AB77E33F253D3D5000ADFE93 /* render.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = render.vsh; sourceTree = "<group>"; };
+		AB77E34F253D725E00ADFE93 /* tnn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = tnn.framework; sourceTree = "<group>"; };
+		AB77E367253D88E300ADFE93 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
+		AB77E36C253D88FD00ADFE93 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		AB77E371253D8A6C00ADFE93 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		AB77E373253D8A7200ADFE93 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		AB77E375253D8A7700ADFE93 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		AB77E39D253D965500ADFE93 /* tnn_sdk_sample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnn_sdk_sample.h; sourceTree = "<group>"; };
+		AB77E39E253D965600ADFE93 /* tnn_sdk_sample.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tnn_sdk_sample.cc; sourceTree = "<group>"; };
+		AB77E3A5253D979F00ADFE93 /* QYTNNFaceAlignerModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYTNNFaceAlignerModel.h; sourceTree = "<group>"; };
+		AB77E3A6253D979F00ADFE93 /* QYTNNFaceAlignerModel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = QYTNNFaceAlignerModel.mm; sourceTree = "<group>"; };
+		AB77E3AB253D97DA00ADFE93 /* tnn_fps_counter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tnn_fps_counter.cc; sourceTree = "<group>"; };
+		AB77E3AC253D97DA00ADFE93 /* tnn_fps_counter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnn_fps_counter.h; sourceTree = "<group>"; };
+		AB77E3B4253D990300ADFE93 /* face_detect_aligner.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = face_detect_aligner.cc; sourceTree = "<group>"; };
+		AB77E3B5253D990300ADFE93 /* face_detect_aligner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = face_detect_aligner.h; sourceTree = "<group>"; };
+		AB77E3BA253D995B00ADFE93 /* blazeface_detector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blazeface_detector.h; sourceTree = "<group>"; };
+		AB77E3BB253D995B00ADFE93 /* blazeface_detector.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blazeface_detector.cc; sourceTree = "<group>"; };
+		AB77E3C3253D9A6600ADFE93 /* youtu_face_align.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = youtu_face_align.cc; sourceTree = "<group>"; };
+		AB77E3C4253D9A6600ADFE93 /* youtu_face_align.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = youtu_face_align.h; sourceTree = "<group>"; };
+		AB77E3C9253D9AF800ADFE93 /* QYTNNPlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QYTNNPlayerViewController.h; sourceTree = "<group>"; };
+		AB77E3CA253D9AF800ADFE93 /* QYTNNPlayerViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = QYTNNPlayerViewController.mm; sourceTree = "<group>"; };
+		AB77E3D5253D9CE400ADFE93 /* TNNBoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TNNBoundingBox.h; sourceTree = "<group>"; };
+		AB77E3D6253D9CE400ADFE93 /* TNNBoundingBox.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TNNBoundingBox.mm; sourceTree = "<group>"; };
+		AB77E3DB253D9F9800ADFE93 /* UIImage+Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Utility.h"; sourceTree = "<group>"; };
+		AB77E3DC253D9F9800ADFE93 /* UIImage+Utility.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIImage+Utility.mm"; sourceTree = "<group>"; };
+		AB77E3E1253DA06200ADFE93 /* model */ = {isa = PBXFileReference; lastKnownFileType = folder; name = model; path = ../../../TNN/model; sourceTree = "<group>"; };
 		AB8522DC2513402A0021D179 /* OpenGL_3.0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGL_3.0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB8522DF2513402A0021D179 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		AB8522E02513402A0021D179 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -138,6 +184,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB77E395253D933D00ADFE93 /* CoreMedia.framework in Frameworks */,
+				AB77E36D253D88FD00ADFE93 /* Accelerate.framework in Frameworks */,
+				AB77E368253D88E300ADFE93 /* CoreML.framework in Frameworks */,
+				AB77E350253D725E00ADFE93 /* tnn.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +211,7 @@
 		AB4D024A251991F40006DC2B /* VCS */ = {
 			isa = PBXGroup;
 			children = (
+				AB4FD51F2529E468005250B9 /* Utilis */,
 				AB549D0B251881C6003A7B30 /* GLKit */,
 				AB4D024B2519921B0006DC2B /* QYPlayerViewController.h */,
 				AB4D024C2519921B0006DC2B /* QYPlayerViewController.m */,
@@ -174,8 +225,24 @@
 				AB546405251C913300A07163 /* QYPixelBufferWriterViewController.m */,
 				AB5650BF2521784200C022ED /* QYMediaCodecViewController.h */,
 				AB5650C02521784300C022ED /* QYMediaCodecViewController.m */,
+				AB77E3C9253D9AF800ADFE93 /* QYTNNPlayerViewController.h */,
+				AB77E3CA253D9AF800ADFE93 /* QYTNNPlayerViewController.mm */,
 			);
 			path = VCS;
+			sourceTree = "<group>";
+		};
+		AB4FD51F2529E468005250B9 /* Utilis */ = {
+			isa = PBXGroup;
+			children = (
+				AB77E353253D751000ADFE93 /* TNNCore */,
+				AB4FD5202529E4A0005250B9 /* QYImagePicker.h */,
+				AB4FD5212529E4A0005250B9 /* QYImagePicker.m */,
+				AB77E3D5253D9CE400ADFE93 /* TNNBoundingBox.h */,
+				AB77E3D6253D9CE400ADFE93 /* TNNBoundingBox.mm */,
+				AB77E3DB253D9F9800ADFE93 /* UIImage+Utility.h */,
+				AB77E3DC253D9F9800ADFE93 /* UIImage+Utility.mm */,
+			);
+			path = Utilis;
 			sourceTree = "<group>";
 		};
 		AB5463E4251C488700A07163 /* QYGLFilter */ = {
@@ -221,6 +288,37 @@
 			path = GLES;
 			sourceTree = "<group>";
 		};
+		AB77E353253D751000ADFE93 /* TNNCore */ = {
+			isa = PBXGroup;
+			children = (
+				AB77E3A5253D979F00ADFE93 /* QYTNNFaceAlignerModel.h */,
+				AB77E3A6253D979F00ADFE93 /* QYTNNFaceAlignerModel.mm */,
+				AB77E39E253D965600ADFE93 /* tnn_sdk_sample.cc */,
+				AB77E39D253D965500ADFE93 /* tnn_sdk_sample.h */,
+				AB77E3AB253D97DA00ADFE93 /* tnn_fps_counter.cc */,
+				AB77E3AC253D97DA00ADFE93 /* tnn_fps_counter.h */,
+				AB77E3B4253D990300ADFE93 /* face_detect_aligner.cc */,
+				AB77E3B5253D990300ADFE93 /* face_detect_aligner.h */,
+				AB77E3BB253D995B00ADFE93 /* blazeface_detector.cc */,
+				AB77E3BA253D995B00ADFE93 /* blazeface_detector.h */,
+				AB77E3C3253D9A6600ADFE93 /* youtu_face_align.cc */,
+				AB77E3C4253D9A6600ADFE93 /* youtu_face_align.h */,
+			);
+			path = TNNCore;
+			sourceTree = "<group>";
+		};
+		AB77E366253D88E200ADFE93 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AB77E375253D8A7700ADFE93 /* AVFoundation.framework */,
+				AB77E373253D8A7200ADFE93 /* CoreMedia.framework */,
+				AB77E371253D8A6C00ADFE93 /* Foundation.framework */,
+				AB77E36C253D88FD00ADFE93 /* Accelerate.framework */,
+				AB77E367253D88E300ADFE93 /* CoreML.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AB8522D32513402A0021D179 = {
 			isa = PBXGroup;
 			children = (
@@ -228,6 +326,7 @@
 				AB8522FA2513402C0021D179 /* OpenGL_3.0Tests */,
 				AB8523052513402C0021D179 /* OpenGL_3.0UITests */,
 				AB8522DD2513402A0021D179 /* Products */,
+				AB77E366253D88E200ADFE93 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -244,8 +343,9 @@
 		AB8522DE2513402A0021D179 /* OpenGL_3.0 */ = {
 			isa = PBXGroup;
 			children = (
+				AB77E3E1253DA06200ADFE93 /* model */,
+				AB77E34F253D725E00ADFE93 /* tnn.framework */,
 				AB5463F3251C4DF200A07163 /* LUTSource.bundle */,
-				AB4D0254251992870006DC2B /* JJTM2837.mov */,
 				AB594C252524869800A90C47 /* XFXM8486.mp4 */,
 				AB852314251340BC0021D179 /* Examples */,
 				AB8522DF2513402A0021D179 /* AppDelegate.h */,
@@ -259,6 +359,8 @@
 				AB8522ED2513402C0021D179 /* LaunchScreen.storyboard */,
 				AB8522F02513402C0021D179 /* Info.plist */,
 				AB8522F12513402C0021D179 /* main.m */,
+				AB77E33A253D3D0A00ADFE93 /* render.fsh */,
+				AB77E33F253D3D5000ADFE93 /* render.vsh */,
 			);
 			path = OpenGL_3.0;
 			sourceTree = "<group>";
@@ -289,6 +391,7 @@
 				AB549D0C2518822F003A7B30 /* GLES */,
 				AB85231B251343350021D179 /* QYUtils */,
 				AB5992E925149B7F00247AE4 /* theme.jpg */,
+				AB5506122535954900753D86 /* test.jpg */,
 				AB85232625134DD00021D179 /* yourname.png */,
 			);
 			path = Examples;
@@ -328,6 +431,7 @@
 				AB8522D82513402A0021D179 /* Sources */,
 				AB8522D92513402A0021D179 /* Frameworks */,
 				AB8522DA2513402A0021D179 /* Resources */,
+				AB77E351253D729B00ADFE93 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -431,9 +535,12 @@
 				AB8522EC2513402C0021D179 /* Assets.xcassets in Resources */,
 				AB5463F4251C4DF200A07163 /* LUTSource.bundle in Resources */,
 				AB5463EF251C49BF00A07163 /* filter.fsh in Resources */,
-				AB4D0255251992870006DC2B /* JJTM2837.mov in Resources */,
+				AB77E3E2253DA06200ADFE93 /* model in Resources */,
+				AB77E33B253D3D0A00ADFE93 /* render.fsh in Resources */,
+				AB77E340253D3D5000ADFE93 /* render.vsh in Resources */,
 				AB85232725134DD00021D179 /* yourname.png in Resources */,
 				AB8522EA2513402A0021D179 /* Main.storyboard in Resources */,
+				AB5506132535954900753D86 /* test.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +560,26 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AB77E351253D729B00ADFE93 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho $TARGET_BUILD_DIR\ncp $PROJECT_DIR/$PROJECT_NAME/tnn.framework/default.metallib $TARGET_BUILD_DIR/$TARGET_NAME.app/tnn.metallib\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		AB8522D82513402A0021D179 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -463,23 +590,33 @@
 				AB546400251C822800A07163 /* QYGLOutputPixelBuffer.m in Sources */,
 				AB8522E72513402A0021D179 /* ViewController.m in Sources */,
 				AB85232C251354060021D179 /* QYImageTransitionViewController.m in Sources */,
+				AB4FD5222529E4A0005250B9 /* QYImagePicker.m in Sources */,
 				AB85231A251341760021D179 /* QYGLViewController.m in Sources */,
+				AB77E3B6253D990400ADFE93 /* face_detect_aligner.cc in Sources */,
+				AB77E3D7253D9CE400ADFE93 /* TNNBoundingBox.mm in Sources */,
 				AB5463DA251C3B6A00A07163 /* QYPlayerFilterViewController.m in Sources */,
 				AB4F69B9251B1F400053325C /* QYMediaEncoder.m in Sources */,
 				AB5992E825144BCA00247AE4 /* QYImageTransitionTypeViewController.m in Sources */,
+				AB77E3BC253D995B00ADFE93 /* blazeface_detector.cc in Sources */,
+				AB77E3A7253D979F00ADFE93 /* QYTNNFaceAlignerModel.mm in Sources */,
+				AB77E3DD253D9F9800ADFE93 /* UIImage+Utility.mm in Sources */,
 				AB4F69C7251B6AA90053325C /* QYGLRenderTexture.m in Sources */,
 				AB546406251C913300A07163 /* QYPixelBufferWriterViewController.m in Sources */,
 				AB8522E12513402A0021D179 /* AppDelegate.m in Sources */,
+				AB77E3A1253D965600ADFE93 /* tnn_sdk_sample.cc in Sources */,
 				AB85231E251343520021D179 /* QYGLContext.m in Sources */,
 				AB9E5BA22518A3DA00A1D9F3 /* QYMediaDecoder.m in Sources */,
 				AB8523212513452A0021D179 /* QYGLUtils.m in Sources */,
 				AB8522F22513402C0021D179 /* main.m in Sources */,
 				AB5463E7251C48AB00A07163 /* QYGLImageFilter.m in Sources */,
 				AB4D024D2519921B0006DC2B /* QYPlayerViewController.m in Sources */,
+				AB77E3C5253D9A6600ADFE93 /* youtu_face_align.cc in Sources */,
+				AB77E3CB253D9AF800ADFE93 /* QYTNNPlayerViewController.mm in Sources */,
 				AB8522E42513402A0021D179 /* SceneDelegate.m in Sources */,
 				AB4F69C0251B39870053325C /* QYPlayerRecordViewController.m in Sources */,
 				AB5650C12521784300C022ED /* QYMediaCodecViewController.m in Sources */,
 				AB852317251340F20021D179 /* QYImageRenderViewController.m in Sources */,
+				AB77E3AD253D97DA00ADFE93 /* tnn_fps_counter.cc in Sources */,
 				AB5463E0251C3FF700A07163 /* QYGLTextureOutput.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -653,13 +790,19 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CFD2JZRN22;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/OpenGL_3.0",
+				);
 				INFOPLIST_FILE = OpenGL_3.0/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vdian.mediapipe.OpenGL-3-0";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vdian.mediapipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -671,13 +814,19 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CFD2JZRN22;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/OpenGL_3.0",
+				);
 				INFOPLIST_FILE = OpenGL_3.0/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.vdian.mediapipe.OpenGL-3-0";
+				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.vdian.mediapipe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

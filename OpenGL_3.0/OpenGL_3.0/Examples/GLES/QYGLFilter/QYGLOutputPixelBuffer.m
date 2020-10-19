@@ -60,7 +60,6 @@
             CFMutableDictionaryRef attrs = CFDictionaryCreateMutable(kCFAllocatorDefault, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
             CFDictionarySetValue(attrs, kCVPixelBufferIOSurfacePropertiesKey, empty);
            
-
             CVReturn error;
             error = CVPixelBufferCreate(kCFAllocatorDefault, _mTextureSize.width, _mTextureSize.height, kCVPixelFormatType_32BGRA, attrs, &_pixelBuffer);
             if (error)
