@@ -151,7 +151,7 @@ vector<pair<float, float>> key_points = {};
     else {
         if (hanlder) {
             vector<pair<float, float>> key_points = {};
-            hanlder(key_points, -1,  true);
+            hanlder(key_points, -1,  false);
         }
     }
 }

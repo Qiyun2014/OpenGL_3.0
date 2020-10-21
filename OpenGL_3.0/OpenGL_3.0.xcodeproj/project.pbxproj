@@ -236,10 +236,6 @@
 				AB77E353253D751000ADFE93 /* TNNCore */,
 				AB4FD5202529E4A0005250B9 /* QYImagePicker.h */,
 				AB4FD5212529E4A0005250B9 /* QYImagePicker.m */,
-				AB77E3D5253D9CE400ADFE93 /* TNNBoundingBox.h */,
-				AB77E3D6253D9CE400ADFE93 /* TNNBoundingBox.mm */,
-				AB54A555253E81350068A465 /* QYTNNPredict.h */,
-				AB54A556253E81350068A465 /* QYTNNPredict.mm */,
 			);
 			path = Utilis;
 			sourceTree = "<group>";
@@ -290,6 +286,10 @@
 		AB77E353253D751000ADFE93 /* TNNCore */ = {
 			isa = PBXGroup;
 			children = (
+				AB77E3D5253D9CE400ADFE93 /* TNNBoundingBox.h */,
+				AB77E3D6253D9CE400ADFE93 /* TNNBoundingBox.mm */,
+				AB54A555253E81350068A465 /* QYTNNPredict.h */,
+				AB54A556253E81350068A465 /* QYTNNPredict.mm */,
 				AB77E3A5253D979F00ADFE93 /* QYTNNFaceAlignerModel.h */,
 				AB77E3A6253D979F00ADFE93 /* QYTNNFaceAlignerModel.mm */,
 				AB77E39E253D965600ADFE93 /* tnn_sdk_sample.cc */,

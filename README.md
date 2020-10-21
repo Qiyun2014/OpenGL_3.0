@@ -104,3 +104,57 @@ _imageSize = CGSizeMake(textureInfo.width, textureInfo.height);
     glDisable(GL_BLEND);
 }
 ```
+
+## 人脸识别
+
+> 模型使用google开源项目MediaPipe中的faceblaze
+> 支持亚毫秒级的人脸检测
+> 人脸关键点定位使用腾讯优图工作室开源模型文件
+
+#### 效果示例
+
+> 以鼻尖关键点作为中心，添加贴图在视频上
+> 根据人脸定位，计算当前人脸角度、焦距大小来进行贴图旋转和缩放
+
+<div align=left><img width="300" height="600" src="example/face.gif"/></div>
+
+
+#### 代码实现
+
+> 为了方便demo使用，本处没有使用opengl进行绘制，可以结合上文进行处理
+
+**添加图片**
+
+```
+self.imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"emoji.png"]];
+self.imageView.frame = CGRectMake(-50, 0, 50, 50);
+[self.view addSubview:self.imageView];
+```
+
+**初始化**
+
+```
+// 初始化识别器，指定最大支持人脸个数及预览视频尺寸，用于适配点位
+self.predictManager = [[WDPredictManager alloc] initWithFaceNumber:12 withInputSize:self.renderView.bounds.size];
+// 显示关键点，用于demo查看
+[self.predictManager showFaceLandmarkOnView:self.renderView];
+// 设置代理
+self.predictManager.delegate = self;
+```
+
+**实现代理**
+
+```
+- (void)predict:(WDPredictManager *)predict didFinished:(BOOL)hasFace
+{
+    if (hasFace) {
+        // 鼻尖位置
+        CGPoint point = [predict pointForIndex:16];
+        NSLog(@"point = %@, 角度 = %.2f", NSStringFromCGPoint(point), predict.angle);
+        
+        self.imageView.center = point;
+        self.imageView.transform = CGAffineTransformMakeRotation(predict.angle);
+        self.imageView.transform = CGAffineTransformScale(self.imageView.transform, predict.scale, predict.scale);
+    }
+}
+```
