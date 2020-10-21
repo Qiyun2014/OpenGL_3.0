@@ -97,12 +97,14 @@ Status YoutuFaceAlign::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     YoutuFaceAlignInfo face;
 
     constexpr int pts_dim = 2;
-    auto pts_cnt = pts->GetDims()[1] / pts_dim;
+    constexpr int stride = 4;
+    auto pts_cnt = pts->GetDims()[1] / pts_dim / stride;
     auto pts_data = static_cast<float*>(pts->GetData());
     face.key_points.resize(pts_cnt);
 
+    // 仅需要使用68个关键点
     for(int i=0; i<pts_cnt; ++i) {
-        face.key_points[i] = std::make_pair(pts_data[i * pts_dim + 0], pts_data[i * pts_dim + 1]);
+        face.key_points[i] = std::make_pair(pts_data[i * stride * pts_dim + 0], pts_data[i * stride * pts_dim + 1]);
     }
 
     output->face = std::move(face);

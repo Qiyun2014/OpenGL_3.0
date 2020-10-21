@@ -143,7 +143,7 @@ private:
     // the minimum face size
     float min_face_size = 20;
     // the confident threshold
-    float face_threshold = 0.5;
+    float face_threshold = 0.7;
     // model configs
     float net_scale;
     std::vector<float> mean;

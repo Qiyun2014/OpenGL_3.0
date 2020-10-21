@@ -728,7 +728,7 @@ void NMS(std::vector<ObjectInfo> &input, std::vector<ObjectInfo> &output, float 
     std::sort(input.begin(), input.end(), [](const ObjectInfo &a, const ObjectInfo &b) { return a.score > b.score; });
     output.clear();
 
-    int box_num = input.size();
+    int box_num = (int)input.size();
 
     std::vector<int> merged(box_num, 0);
 

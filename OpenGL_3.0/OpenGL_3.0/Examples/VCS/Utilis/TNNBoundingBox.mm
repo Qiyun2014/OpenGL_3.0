@@ -10,9 +10,13 @@
 @end
 
 @implementation TNNBoundingBox
-- (instancetype)init {
+
+
+- (instancetype)init
+{
     self = [super init];
-    if (self != nil) {
+    if (self != nil)
+    {
         _boxLayer = [[CAShapeLayer alloc] init];
         _boxLayer.fillColor = [UIColor clearColor].CGColor;
         _boxLayer.lineWidth = 2;
@@ -24,15 +28,13 @@
         _textLayer.contentsScale = [UIScreen mainScreen].scale;
         _textLayer.fontSize = 14;
         {
-            auto font = [UIFont systemFontOfSize:14];
+            UIFont *font = [UIFont systemFontOfSize:14];
             CFStringRef fontName = (__bridge CFStringRef)font.fontName;
             CGFontRef fontRef = CGFontCreateWithFontName(fontName);
             _textLayer.font = fontRef;
             CGFontRelease(fontRef);
         }
-
         _textLayer.alignmentMode = kCAAlignmentCenter;
-        
         _markLayers = [NSArray array];
     }
     return self;
@@ -42,7 +44,7 @@
     [layer addSublayer:_boxLayer];
     [layer addSublayer:_textLayer];
     
-    auto markLayers = _markLayers;
+    NSArray *markLayers = _markLayers;
     for (CAShapeLayer * item in markLayers) {
         [layer addSublayer:item];
     }
@@ -52,7 +54,7 @@
     [_boxLayer removeFromSuperlayer];
     [_textLayer removeFromSuperlayer];
     
-    auto markLayers = _markLayers;
+    NSArray *markLayers = _markLayers;
     for (CAShapeLayer * item in markLayers) {
         [item removeFromSuperlayer];
     }
@@ -61,7 +63,7 @@
 - (void)showText:(NSString *)text withColor:(UIColor *)color atFrame:(CGRect)frame {
     [CATransaction setDisableActions:YES];
     
-    auto path = [UIBezierPath bezierPathWithRect:frame];
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:frame];
     _boxLayer.path = path.CGPath;
     _boxLayer.strokeColor = color.CGColor;
     _boxLayer.hidden = NO;
@@ -70,9 +72,9 @@
     _textLayer.backgroundColor = color.CGColor;
     _textLayer.hidden = NO;
 
-    auto attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
+    NSDictionary *attributes = @{NSFontAttributeName:[UIFont systemFontOfSize:14]};
 
-    auto textRect = [text boundingRectWithSize:CGSizeMake(400, 100)
+    CGRect textRect = [text boundingRectWithSize:CGSizeMake(400, 100)
                                        options:NSStringDrawingTruncatesLastVisibleLine
                                     attributes:attributes
                                        context:nil];
@@ -85,14 +87,15 @@
     [CATransaction setDisableActions:NO];
 }
 
-- (void)showMarkAtPoints:(std::vector<std::pair<float, float>>)points withColor:(UIColor *)color {
+- (void)showMarkAtPoints:(std::vector<std::pair<float, float>>)points withColor:(UIColor *)color
+{
     [CATransaction setDisableActions:YES];
-    
     NSMutableArray<CAShapeLayer *> *newMarkLayers = [NSMutableArray arrayWithArray:_markLayers];
     
     //add more layers if need
-    for (auto i=_markLayers.count; i<points.size(); i++) {
-        auto boxLayer = [[CAShapeLayer alloc] init];
+    for (NSInteger i=_markLayers.count; i<points.size(); i++)
+    {
+        CAShapeLayer *boxLayer = [[CAShapeLayer alloc] init];
         boxLayer.fillColor = [UIColor clearColor].CGColor;
         boxLayer.lineWidth = 1;
         boxLayer.hidden = YES;
@@ -100,21 +103,21 @@
         [newMarkLayers addObject:boxLayer];
     }
     
-    auto super_layer = _boxLayer.superlayer;
-    for (auto i=0; i<newMarkLayers.count; i++) {
-        auto layer = newMarkLayers[i];
+    CALayer *super_layer = _boxLayer.superlayer;
+    for (NSInteger i=0; i<newMarkLayers.count; i++) {
+        CAShapeLayer *layer = newMarkLayers[i];
         if (layer.superlayer != super_layer) {
             [layer removeFromSuperlayer];
             [super_layer addSublayer:layer];
         }
         
         if (i < points.size()) {
-            auto pt = points[i];
-            auto path = [UIBezierPath bezierPath];
-            [path moveToPoint:CGPointMake(pt.first-2, pt.second)];
-            [path addLineToPoint:CGPointMake(pt.first+2, pt.second)];
-            [path moveToPoint:CGPointMake(pt.first, pt.second-2)];
-            [path addLineToPoint:CGPointMake(pt.first, pt.second+2)];
+            auto point = points[i];
+            UIBezierPath *path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(point.first-2, point.second)];
+            [path addLineToPoint:CGPointMake(point.first+2, point.second)];
+            [path moveToPoint:CGPointMake(point.first, point.second-2)];
+            [path addLineToPoint:CGPointMake(point.first, point.second+2)];
             [path closePath];
             
             layer.path = path.CGPath;
@@ -129,17 +132,16 @@
     [CATransaction setDisableActions:NO];
 }
 
-- (void)hide {
+- (void)hide
+{
     [CATransaction setDisableActions:YES];
-    
     _boxLayer.hidden = YES;
     _textLayer.hidden = YES;
     
-    auto markLayers = _markLayers;
+    NSArray<CAShapeLayer *>  *markLayers = _markLayers;
     for (CAShapeLayer * item in markLayers) {
         item.hidden = YES;
     }
-    
     [CATransaction setDisableActions:NO];
 }
 @end

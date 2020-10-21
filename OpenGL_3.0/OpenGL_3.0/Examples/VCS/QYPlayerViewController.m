@@ -56,7 +56,7 @@
 - (QYMediaDecoder *)mediaDecoder
 {
     if (!_mediaDecoder) {
-        NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"XFXM8486" ofType:@"mp4"]];
+        NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"rowing" ofType:@"mp4"]];
         _mediaDecoder = [[QYMediaDecoder alloc] initWithURL:url];
         _mediaDecoder.delegate = self;
     }

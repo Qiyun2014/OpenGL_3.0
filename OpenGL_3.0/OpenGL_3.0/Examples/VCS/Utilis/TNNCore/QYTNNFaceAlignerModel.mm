@@ -17,9 +17,9 @@ using namespace std;
 
 @implementation QYTNNFaceAlignerModel
 
-- (std::shared_ptr<BlazeFaceDetector>) loadFaceDetector:(TNNComputeUnits)units {
+- (std::shared_ptr<BlazeFaceDetector>) loadFaceDetector:(TNNComputeUnits)units
+{
     std::shared_ptr<BlazeFaceDetector> predictor = nullptr;
-    
     auto library_path = [[NSBundle mainBundle] pathForResource:@"tnn.metallib" ofType:nil];
     auto model_path = [[NSBundle mainBundle] pathForResource:@"model/blazeface/blazeface.tnnmodel"
                                                       ofType:nil];
@@ -127,7 +127,7 @@ using namespace std;
         option->input_width = target_width;
         option->input_height = target_height;
         //face threshold
-        option->face_threshold = 0.5;
+        option->face_threshold = 0.7;
         option->min_face_size = 20;
         //model phase
         option->phase = phase;

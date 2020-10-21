@@ -80,18 +80,18 @@ Status FaceDetectAligner::Predict(std::shared_ptr<TNNSDKInput> sdk_input,
             }
             if(face_info.size() <= 0) {
                 //no faces, return
-                LOGD("Error no faces found!\n");
+                // LOGD("Error no faces found!\n");
                 return status;
             }
             auto face = face_info[0];
             // scale the face point according to the original image size
             auto face_orig = face.AdjustToViewSize(image_orig_height, image_orig_width, 2);
-            LOGI("face_origin:(%f,%f,%f,%f), conf=%.4f\n", face_orig.x1, face_orig.y1, face_orig.x2, face_orig.y2, face_orig.score);
+            // LOGI("face_origin:(%f,%f,%f,%f), conf=%.4f\n", face_orig.x1, face_orig.y1, face_orig.x2, face_orig.y2, face_orig.score);
             
             // set face region for phase1 model
             if (!(predictor_align1_cast &&
                   predictor_align1_cast->SetFaceRegion(face_orig.x1, face_orig.y1, face_orig.x2, face_orig.y2))) {
-                //no invalid faces, return
+                // no invalid faces, return
                 LOGD("Error no valid faces found!\n");
                 return status;
             }
@@ -104,7 +104,7 @@ Status FaceDetectAligner::Predict(std::shared_ptr<TNNSDKInput> sdk_input,
         // update prev_face
         has_prev_face_ = predictor_align1_cast->GetPrevFace();
         if(!has_prev_face_) {
-            LOGI("Next frame will use face detector!\n");
+            // LOGI("Next frame will use face detector!\n");
         }
         phase1_pts = predictor_align1_cast->GetPrePts();
     }

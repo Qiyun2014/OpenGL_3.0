@@ -52,7 +52,7 @@
              @"QYPlayerFilterViewController",
              @"QYPixelBufferWriterViewController",
              @"QYMediaCodecViewController",
-             @"QYTNNPlayerViewController",
+             @"QTTNNFaceViewController",
     ];
 }
 
@@ -67,7 +67,7 @@
              @"视频播放 + 滤镜",
              @"视频播放 + 滤镜 + 录制",
              @"音视频 + 编解码",
-             @"NCNN + 卷积神经网络",
+             @"TNN + 人脸关键点检测"
     ];
 }
 

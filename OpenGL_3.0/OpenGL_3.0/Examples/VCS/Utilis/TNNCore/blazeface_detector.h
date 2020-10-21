@@ -45,7 +45,7 @@ public:
     virtual ~BlazeFaceDetectorOption() {}
     int input_width;
     int input_height;
-    int num_thread = 1;
+    int num_thread = 2;
     float min_score_threshold = 0.75;
     float min_suppression_threshold = 0.3;
     std::string anchor_path;
