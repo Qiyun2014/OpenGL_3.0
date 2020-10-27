@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "QYMediaEncoder.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -34,11 +35,22 @@ typedef enum QYMediaStatusError MediaError;
 
 
 @interface QYMediaDecoder : NSObject
+{
+    BOOL    _hasAudioTrack;
+    BOOL    _audioEncodingIsFinished, _videoEncodingIsFinished;
+    
+    QYMediaEncoder  *_writerTarget;
+}
 
 - (id)initWithURL:(NSURL *)URL;
 
+
 // 代理,监听播放状态及数据回调
 @property (weak, nonatomic, nullable) id <QYMediaDecoderDelegate> delegate;
+
+
+- (void)supportMediaEncoder:(QYMediaEncoder *)encoderTarget;
+
 
 // 异步线程解码，不阻碍主线程，用于离屏渲染及后台处理
 - (void)startAsyncDecoder;

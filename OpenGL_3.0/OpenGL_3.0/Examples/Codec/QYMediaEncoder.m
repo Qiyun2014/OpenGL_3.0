@@ -38,6 +38,8 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 @implementation QYMediaEncoder
 {
     BOOL    _isStarting;
+    BOOL    _audioEncodingIsFinished, _videoEncodingIsFinished;
+    dispatch_queue_t _audioInputQueue, _videoInputQueue;
 }
 
 
@@ -65,7 +67,7 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 
 #pragma mark    -   public method
 
-- (void)startAsyncEncoder
+- (void)startAsyncEncoderAtTime:(CMTime)time
 {
     if (self.mWriter.status != AVAssetWriterStatusWriting || self.mWriter.status != AVAssetWriterStatusCompleted)
     {
@@ -74,7 +76,7 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
             NSAssert(self.mPixelBufferAdaptor != nil, @"Input pixelBuffer adaptor create failed ...");
         }
         [self.mWriter startWriting];
-        [self.mWriter startSessionAtSourceTime:kCMTimeZero];
+        [self.mWriter startSessionAtSourceTime:time];
         _isStarting = true;
     }
     else
@@ -101,6 +103,9 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
 
 - (void)finishedEncoder
 {
+    _videoEncodingIsFinished = YES;
+    _audioEncodingIsFinished = YES;
+    
     if (_mWriter == nil || _mWriter.status == AVAssetWriterStatusUnknown) {
         return;
     }
@@ -144,7 +149,7 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
     }
     
     if (self.mWriter.status != AVAssetWriterStatusWriting && !_isStarting) {
-        [self startAsyncEncoder];
+        [self startAsyncEncoderAtTime:ts];
         NSLog(@"Start writing ...");
     }
         
@@ -191,9 +196,8 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
     }
     
     if (self.mWriter.status != AVAssetWriterStatusWriting && !_isStarting) {
-        [self startAsyncEncoder];
+        [self startAsyncEncoderAtTime:ts];
         NSLog(@"1: Start writing ...");
-        return;
     }
     
     void (^audioWriter) (AVAssetWriterInput *writerInput) = ^(AVAssetWriterInput *writerInput)
@@ -248,6 +252,60 @@ NSString *kObserverWriterOutputStatus = @"mWriter.status";
     else
     {
         [self inputAudioSampleBuffer:sampleBuffer timestamp:pts];
+    }
+}
+
+
+- (void)enableSynchronizationCallbacks
+{
+    if (_videoInputReadyCallback != NULL)
+    {        
+        AVAssetWriterInput *videoInput = self.mWriter.inputs.firstObject;
+        _videoInputQueue = dispatch_queue_create("com.mediaEncoder.audioQueue", NULL);
+        
+        OBJC_WEAK(self);
+        if (videoInput) {
+            [videoInput requestMediaDataWhenReadyOnQueue:_videoInputQueue usingBlock:^{
+                OBJC_STRONG(weak_self);
+                while (videoInput.readyForMoreMediaData)
+                {
+                    if (strong_weak_self.videoInputReadyCallback && !strong_weak_self.videoInputReadyCallback() && ! strong_weak_self->_videoEncodingIsFinished)
+                    {
+                        dispatch_async([QYGLContext shareImageContext].contextQueue, ^{
+                            if (strong_weak_self.mWriter.status == AVAssetWriterStatusWriting && ! strong_weak_self->_videoEncodingIsFinished) {
+                                strong_weak_self->_videoEncodingIsFinished = YES;
+                                [videoInput markAsFinished];
+                            }
+                        });
+                    }
+                }
+            }];
+        }
+    }
+    
+    if (_audioInputReadyCallback != NULL)
+    {
+        AVAssetWriterInput *audioInput = self.mWriter.inputs.lastObject;
+        _audioInputQueue = dispatch_queue_create("com.mediaEncoder.videoQueue", NULL);
+
+        OBJC_WEAK(self);
+        if (audioInput) {
+            [audioInput requestMediaDataWhenReadyOnQueue:_audioInputQueue usingBlock:^{
+                OBJC_STRONG(weak_self);
+                while (audioInput.readyForMoreMediaData)
+                {
+                    if (strong_weak_self.audioInputReadyCallback && !strong_weak_self.audioInputReadyCallback() && !strong_weak_self->_audioEncodingIsFinished)
+                    {
+                        dispatch_async([QYGLContext shareImageContext].contextQueue, ^{
+                            if (strong_weak_self.mWriter.status == AVAssetWriterStatusWriting && !strong_weak_self->_audioEncodingIsFinished) {
+                                strong_weak_self->_audioEncodingIsFinished = YES;
+                                [audioInput markAsFinished];
+                            }
+                        });
+                    }
+                }
+            }];
+        }
     }
 }
 

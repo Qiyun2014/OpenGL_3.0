@@ -24,6 +24,11 @@ typedef NS_ENUM(NSInteger, QYEncoderType)
 - (id)initWithOutputURL:(NSURL *)outputUrl resolution:(CGSize)resolution encoderType:(QYEncoderType)type;
 
 
+// 解码线程回调
+@property(nonatomic, copy) BOOL (^videoInputReadyCallback) (void);
+@property(nonatomic, copy) BOOL (^audioInputReadyCallback) (void);
+
+
 // 编码输入的图像数据，带入相对时间戳
 - (void)inputPixelBuffer:(CVPixelBufferRef)pixelBuffer timestamp:(CMTime)ts;
 
@@ -35,6 +40,13 @@ typedef NS_ENUM(NSInteger, QYEncoderType)
 
 // 停止编码
 - (void)stopEncoder;
+
+// 开始解码
+- (void)startAsyncEncoderAtTime:(CMTime)time;
+
+// 开始读取音视频线程
+- (void)enableSynchronizationCallbacks;
+
 
 @end
 

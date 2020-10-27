@@ -9,10 +9,58 @@
 #import "QYGLOutputPixelBuffer.h"
 #import "QYGLContext.h"
 
+#define STRINGIZE(x) #x
+#define STRINGIZE2(x) STRINGIZE(x)
+#define SHADER_STRING(text) @ STRINGIZE2(text)
+
+
+NSString *const kOutputVertexString = SHADER_STRING
+(
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+
+ varying vec2 textureCoordinate;
+
+ void main()
+ {
+     gl_Position = position;
+     textureCoordinate = inputTextureCoordinate.xy;
+ }
+ );
+
+NSString *const kOutputFragmentShaderString = SHADER_STRING
+(
+ precision mediump float;
+ varying highp vec2 textureCoordinate;
+ 
+ uniform sampler2D inputImageTexture;
+ 
+ void main()
+ {
+    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+    
+    // BGRA  -->  RGBA
+//    float r = textureColor.b;
+//    float b = textureColor.r;
+//    gl_FragColor = vec4(r, textureColor.g, b, textureColor.a);
+    
+    gl_FragColor = textureColor;
+ }
+);
+
+
 @implementation QYGLOutputPixelBuffer
 {
     CVPixelBufferRef    _pixelBuffer;
     CVOpenGLESTextureRef _renderTexture;
+}
+
+
+- (id)init {
+    if (self = [super initWithVertexShader:kOutputVertexString fragmentShader:kOutputFragmentShaderString]) {
+        
+    }
+    return self;
 }
 
 - (void)cleanupMemory
@@ -39,6 +87,7 @@
 {
     if (kCVReturnSuccess == CVPixelBufferLockBaseAddress(_pixelBuffer, kCVPixelBufferLock_ReadOnly))
     {
+        glFinish();
         if (self.pixelBufferDelegate && [self.pixelBufferDelegate respondsToSelector:@selector(textureOutput:timestamp:didOutputSampleBuffer:)]) {
             [self.pixelBufferDelegate textureOutput:self timestamp:self.timestamp didOutputSampleBuffer:_pixelBuffer];
         }

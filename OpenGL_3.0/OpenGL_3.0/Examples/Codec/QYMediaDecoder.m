@@ -155,12 +155,23 @@ QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
 #pragma mark    -   public method
 
 
+- (void)supportMediaEncoder:(QYMediaEncoder *)encoderTarget
+{
+    _writerTarget = encoderTarget;
+    [_writerTarget startAsyncEncoderAtTime:kCMTimeZero];
+}
+
+
 - (void)startAsyncDecoder
 {
     if (self.reader && self.reader.status != AVAssetReaderStatusReading)
     {
-        [self.reader startReading];
-        [self loopCopyAllSamples];
+        if ([self.reader startReading] == NO)
+        {
+            NSLog(@"Error reading from file at URL: %@", self.asset.URL);
+            return;
+        }
+        [self startMediaDecoder];
     } else {
         NSLog(@"AssetReader status is %ld, current error is %@", (long)self.reader.status, self.reader.error);
     }
@@ -190,6 +201,40 @@ QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
 
 
 #pragma mark    -   private method
+
+- (void)startMediaDecoder {
+    
+    if (_writerTarget)
+    {
+        __block AVAssetReaderOutput *videoReaderOutput, *audioReaderOutput;
+        for (AVAssetReaderOutput *readerOutput in self.reader.outputs)
+        {
+            if ([readerOutput.mediaType isEqualToString:AVMediaTypeAudio])
+            {
+                audioReaderOutput = readerOutput;
+            }
+            else if ([readerOutput.mediaType isEqualToString:AVMediaTypeVideo]) {
+                videoReaderOutput = readerOutput;
+            }
+        }
+        
+        OBJC_WEAK(self);
+        [_writerTarget setVideoInputReadyCallback:^BOOL{
+            OBJC_STRONG(weak_self);
+            return [strong_weak_self readNextVideoFrameFromOutput:videoReaderOutput];
+        }];
+        
+        [_writerTarget setAudioInputReadyCallback:^BOOL{
+            OBJC_STRONG(weak_self);
+            return [strong_weak_self readNextAudioFrameFromOutput:audioReaderOutput];
+        }];
+        
+        [_writerTarget enableSynchronizationCallbacks];
+    }
+    else {
+        [self loopCopyAllSamples];
+    }
+}
 
 
 - (void)loopCopyAllSamples
@@ -223,6 +268,11 @@ QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
         dispatch_semaphore_wait(strong_weak_self->_lock_semaphore, DISPATCH_TIME_FOREVER);
         if ([self.delegate respondsToSelector:@selector(didDecoderFinished)]) {
             [self.delegate didDecoderFinished];
+        }
+        
+        if (self.reader.status == AVAssetReaderStatusCompleted) {
+            [self.reader cancelReading];
+            [self cleanup];
         }
         dispatch_semaphore_signal(strong_weak_self->_lock_semaphore);
     });
@@ -334,6 +384,9 @@ QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
             {
                 trackOutput.alwaysCopiesSampleData = NO;
                 [reader addOutput:trackOutput];
+                if ([obj.mediaType isEqualToString:AVMediaTypeAudio]) {
+                    _hasAudioTrack = YES;
+                }
             }
         }];
     }
@@ -358,6 +411,72 @@ QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
 }
 
 
+
+#pragma mark    -   reader next samplebuffer
+
+
+- (BOOL)readNextVideoFrameFromOutput:(AVAssetReaderOutput *)readerOutput
+{
+    if (self.reader.status == AVAssetReaderStatusReading && !_videoEncodingIsFinished) {
+        
+        const CMSampleBufferRef sampleBuffer = [readerOutput copyNextSampleBuffer];
+        if (sampleBuffer && CMTimeCompare(CMSampleBufferGetOutputDuration(sampleBuffer), kCMTimeZero))
+        {
+            OBJC_WEAK(self);
+            dispatch_sync([QYGLContext shareImageContext].contextQueue, ^{
+                OBJC_STRONG(weak_self);
+                // 拿到视频数据，转成纹理做预处理
+                NSLog(@"---------------------------------------------------------------------------------  >>>>   video ");
+//                [strong_weak_self->_writerTarget inputSampleBuffer:sampleBuffer mediaType:AVMediaTypeVideo];
+                if (strong_weak_self.delegate && [strong_weak_self.delegate respondsToSelector:@selector(mediaDecoder:mediaType:didOutputSampleBufferRef:)])
+                {
+                    [strong_weak_self.delegate mediaDecoder:strong_weak_self mediaType:AVMediaTypeVideo didOutputSampleBufferRef:sampleBuffer];
+                }
+                CMSampleBufferInvalidate(sampleBuffer);
+                CFRelease(sampleBuffer);
+            });
+            return YES;
+        }
+    }
+    else if (_writerTarget != nil)
+    {
+        if (self.reader.status == AVAssetReaderStatusCompleted) {
+            [self cleanup];
+        }
+    }
+    return NO;
+}
+
+
+- (BOOL)readNextAudioFrameFromOutput:(AVAssetReaderOutput *)readerOutput
+{
+    if (self.reader.status == AVAssetReaderStatusReading && !_audioEncodingIsFinished)
+    {
+        CMSampleBufferRef audioSampleBufferRef = [readerOutput copyNextSampleBuffer];
+        if (audioSampleBufferRef)
+        {
+            //NSLog(@"read an audio frame: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, CMSampleBufferGetOutputPresentationTimeStamp(audioSampleBufferRef))));
+            NSLog(@"---------------------------------------------------------------------------------  ****   audio ");
+             [_writerTarget inputSampleBuffer:audioSampleBufferRef mediaType:AVMediaTypeAudio];
+            CFRelease(audioSampleBufferRef);
+            return YES;
+        }
+    }
+    else if (_writerTarget != nil)
+    {
+        if (self.reader.status == AVAssetReaderStatusCompleted ||
+            self.reader.status == AVAssetReaderStatusFailed ||
+            self.reader.status == AVAssetReaderStatusCancelled)
+        {
+            NSLog(@"结束编码");
+            [_writerTarget finishedEncoder];
+            [self cleanup];
+        }
+    }
+    return NO;
+}
+
+
 #pragma mark    -   kvo
 
 
@@ -373,6 +492,8 @@ QYMediaDecoder ()<AVPlayerItemOutputPullDelegate>
                 
             case AVAssetReaderStatusCompleted:
                 NSLog(@"decode video of status is completed ...");
+                _videoEncodingIsFinished = YES;
+                _audioEncodingIsFinished = YES;
                 [self removeObserver:self forKeyPath:kObserverReaderOutputStatus];
                 break;
                 

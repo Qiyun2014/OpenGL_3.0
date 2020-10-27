@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "QYPlayerRenderManagerViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface QYMediaCodecViewController : QYPlayerRenderManagerViewController
+@interface QYMediaCodecViewController : UIViewController
 
 @end
 

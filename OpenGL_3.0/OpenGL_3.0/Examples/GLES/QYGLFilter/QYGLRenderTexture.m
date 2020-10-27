@@ -41,20 +41,24 @@ static const GLfloat textureCoordinates[] = {
 {
     if (self = [super init]) {
 
+        // 后台处理需要开启
+        [QYGLContext setCurrentContext];
         OBJC_WEAK(self);
-        [QYGLUtils gl_programAndCompileShader:vShader ?: [self defalutShaderForSurfix:@"vsh"]
-                                     fragment:fShader ?: [self defalutShaderForSurfix:@"fsh"]
-                      untilBindAttributeBlock:^(GLuint program)
-        {
-            glBindAttribLocation(program, 0, "position");
-            glBindAttribLocation(program, 1, "inputTextureCoordinate");
-        } complileCompletedBlcok:^(GLuint program)
-        {
-            OBJC_STRONG(weak_self);
-            strong_weak_self->_mProgram = program;
-            [strong_weak_self setupUniforms];
-            [strong_weak_self bindAttributesAndUniforms];
-        }];
+        dispatch_sync([QYGLContext shareImageContext].contextQueue, ^{
+            [QYGLUtils gl_programAndCompileShader:vShader ?: [self defalutShaderForSurfix:@"vsh"]
+                                         fragment:fShader ?: [self defalutShaderForSurfix:@"fsh"]
+                          untilBindAttributeBlock:^(GLuint program)
+            {
+                glBindAttribLocation(program, 0, "position");
+                glBindAttribLocation(program, 1, "inputTextureCoordinate");
+            } complileCompletedBlcok:^(GLuint program)
+            {
+                OBJC_STRONG(weak_self);
+                strong_weak_self->_mProgram = program;
+                [strong_weak_self setupUniforms];
+                [strong_weak_self bindAttributesAndUniforms];
+            }];
+        });
     }
     return self;
 }
